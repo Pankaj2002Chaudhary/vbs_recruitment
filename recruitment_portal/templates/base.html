@@ -34,7 +34,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-left: 65%;
+    margin-left: 900px;
 }
 
 .navbar-items {
@@ -46,6 +46,7 @@
     text-decoration: none;
     padding: 10px 15px;
     transition: background 0.3s;
+    padding-left: 30px;
 }
 
 .navbar-items a:hover {
@@ -90,8 +91,10 @@ body {
             </div>
         </nav>
     </header>
+<div class="container">
+{% block start %}
 
-
-
+{% endblock %}
+</div>
 </body>
 </html>

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block start %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Profile</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto; /* Reduced margin from 50px to 20px */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        h1 {
+            text-align: center;
+            color: #2980b9;
+            margin-bottom: 20px; /* Optional: added margin to separate the title from the sections */
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 5px solid #2980b9;
+            background-color: #ecf0f1;
+        }
+        .label {
+            font-weight: bold;
+            color: #2980b9;
+        }
+        a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Candidate Profile</h1>
+<hr>
+        <div class="section">
+            <span class="label">Name:</span> 
+        </div>
+        <div class="section">
+            <span class="label">Age:</span> 28
+        </div>
+        <div class="section">
+            <span class="label">Phone:</span> (123) 456-7890
+        </div>
+        <div class="section">
+            <span class="label">Email:</span> johndoe@example.com
+        </div>
+        <div class="section">
+            <span class="label">Resume:</span> <a href="resume.pdf" target="_blank">Download Resume</a>
+        </div>
+        <div class="section">
+            <span class="label">Experience:</span> 5 years in software development
+        </div>
+        <div class="section">
+            <span class="label">Tech Stack:</span> HTML, CSS, JavaScript, Python, React
+        </div>
+        <div class="section">
+            <span class="label">Interview Feedback:</span> Strong technical skills, great problem-solving ability.
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+{% endblock %}

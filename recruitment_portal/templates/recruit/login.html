@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block start %}
+<style>
+.contain {
+    background-color: #ffffff; 
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 40px; /* Inner spacing */
+   margin-left: 35%;
+   margin-right: 35%;
+   margin-top: 5%;
+}
+
+.login-form h1 {
+    text-align: center; /* Center the heading */
+    margin-bottom: 20px; /* Spacing below the heading */
+    color: #00796b; /* Teal color */
+}
+
+.input-group {
+    margin-bottom: 15px; /* Spacing between input fields */
+}
+
+.input-group label {
+    display: block; /* Make labels block-level */
+    margin-bottom: 5px; /* Spacing below labels */
+    color: black; /* Dark gray for labels */
+    font-weight: bold;
+}
+
+.input-group input {
+    width: 100%; /* Full width input */
+    padding: 10px; /* Padding inside input */
+    border: 1px solid #00796b; /* Teal border */
+    border-radius: 5px; /* Rounded input corners */
+}
+
+button {
+    width: 100%; /* Full width button */
+    margin-left: 3%;
+    padding: 10px; /* Padding inside button */
+    background-color: #00796b; /* Teal background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded button corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Button text size */
+    transition: background-color 0.3s; /* Smooth transition */
+    
+}
+
+button:hover {
+    background-color: #004d40; /* Darker teal on hover */
+}
+
+
+</style>
+<div class="contain">
+    <form class="login-form" method="post">
+        <h1>Login</h1>
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter username" required>
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+</div>
+{% endblock %}

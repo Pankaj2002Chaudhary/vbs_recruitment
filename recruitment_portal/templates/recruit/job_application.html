@@ -1,0 +1,42 @@
+<!-- job_application.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="httplabel='Experience', widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Describe your experience', 'rows': 4})s://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Job Application</title>
+    <style>
+body {
+    background-color: #f8f9fa;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #343a40;
+}
+
+.btn {
+    margin-top: 10px;
+}
+</style>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="mb-4">Job Application Form</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+</body>
+</html>

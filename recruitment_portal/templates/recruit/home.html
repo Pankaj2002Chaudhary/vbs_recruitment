@@ -15,6 +15,9 @@
         <th scope="col">Interviewer</th>
         <th scope="col">Resume</th>
         <th scope="col">Status</th>
+        {% if request.user.is_authenticated %}
+        <th scope="col">Delete/Modify</th>
+{% endif %}
 
       </tr>
     </thead>
@@ -27,7 +30,9 @@
         <td>{{i.interviewer}}</td>
         <td>{{ i.resume }}</td>
         <td>Not Updated</td>
-        
+        {% if request.user.is_authenticated %}
+        <td></td>
+        {% endif %}
 
       </tr>
       {% endfor %}

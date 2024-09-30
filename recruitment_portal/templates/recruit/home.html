@@ -22,10 +22,10 @@
       {% for i in queryset %}
       <tr>
         <th scope="row">{{forloop.counter}}</th>
-        <td><a href="{% url 'details' %}" class="namecol">{{i.name}}</a> </td>
+        <td><a href="{% url 'details' i.id %}" class="namecol">{{i.name}}</a> </td>
         <td> {{i.email}}</td>
-        <td>{{i.inteviewer}}</td>
-        <td><a href="{{i.resume}}">resume</a></td>
+        <td>{{i.interviewer}}</td>
+        <td>{{ i.resume }}</td>
         <td>Not Updated</td>
         
 

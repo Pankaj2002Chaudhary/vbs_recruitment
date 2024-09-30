@@ -1,31 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Form</title>
+{% extends "base.html" %}
+{% block start %}
 <style>
-* {
-    box-sizing: border-box;
-}
 
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f4f8;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* height: 100vh; */
-    margin: 0;
-}
 
-.container {
+.contain {
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 600px;
+    /* width: 600px; */
+    margin-top: 20px;
+    margin-left: 30%;
+    margin-right: 30%;
+    
 }
 
 h1 {
@@ -48,8 +35,9 @@ input[type="text"],
 input[type="email"],
 input[type="tel"],
 input[type="number"],
-input[type="file"] {
-    width: 100%;
+input[type="file"],
+input[type="date"]{
+    width: 97%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -63,6 +51,12 @@ input[type="number"]:focus {
     outline: none;
 }
 
+#tech_stack,#address,#experience{
+    width: 97%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 button {
     width: 100%;
     padding: 10px;
@@ -79,51 +73,66 @@ button:hover {
 }
 
 </style>
-</head>
-<body>
-    <div class="container">
+
+    <div class="contain">
         <h1>Register Candidate</h1>
         <form id="registrationForm" method="post",enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" placeholder="Enter name" required>
             </div>
             <div class="form-group">
                 <label for="age">Age</label>
-                <input type="number" id="age" name="age" required>
+                <input type="number" id="age" name="age" placeholder="Enter age" required>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" placeholder="Enter email" required>
             </div>
             <div class="form-group">
                 <label for="phone">Phone</label>
-                <input type="tel" id="phone" name="phone" required>
+                <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required>
             </div>
             <div class="form-group">
                 <label for="interviewer">Interviewer</label>
-                <input type="text" id="interviewer" name="interviewer" required>
+                <input type="text" id="interviewer" name="interviewer" placeholder="Enter interviewer ldap" required>
             </div>
+
+            <div class="form-group">
+                <label for="date">Date of registration:</label>
+                <input type="date" id="date" name="registerdate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="date">First round:</label>
+                <input type="date" id="date" name="firstround" >
+            </div>
+
+            <div class="form-group">
+                <label for="date">Second round:</label>
+                <input type="date" id="date" name="secondround" >
+            </div>
+
             <div class="form-group">
                 <label for="experience">Experience</label>
-                <input type="text" id="experience" name="experience" required>
+                <textarea id="experience" name="experience" placeholder="Enter experience details" rows="4" cols="50" required></textarea>
             </div>
             <div class="form-group">
                 <label for="tech_stack">Tech Stack</label>
-                <input type="text" id="tech_stack" name="tech_stack" required>
+                <textarea id="tech_stack" name="tech_stack" placeholder="Enter tech stack" rows="4" cols="50" required></textarea>
+
             </div>
             <div class="form-group">
                 <label for="address">Address</label>
-                <input type="text" id="address" name="address" required>
+                <textarea id="address" name="address" placeholder="Enter address" rows="4" cols="50" required></textarea>
             </div>
             <div class="form-group">
                 <label for="resume">Upload Resume</label>
-                <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx">
+                <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
             </div>
             <button type="submit">Register</button>
         </form>
     </div>
-</body>
 
-</html>
+{% endblock %}

@@ -63,14 +63,49 @@ def add_candidate(request):
             address=address,
             tech_stack=tech_stack,
             registerdate=registerdate,
-            secondround=secondround,
-            firstround=firstround,
         )
         return redirect('home')
     queryset=Candidate.objects.all()
     context={'queryset':queryset}
     return render(request, 'recruit/add_candidate.html',context )
 
+def editCandidate(request,id):
+    if request.method == "POST":
+        name=request.POST.get('name')
+        age=request.POST.get('age')
+        email=request.POST.get('email')
+        phone=request.POST.get('phone')
+        registerdate=request.POST.get('registerdate')
+        interviewer=request.POST.get('interviewer')
+        resume=request.FILES.get('resume')
+        experience=request.POST.get('experience')
+        address=request.POST.get('address')
+        tech_stack=request.POST.get('tech_stack')
+
+        edit=Candidate.objects.get(id=id)
+        edit.name=name
+        edit.age=age
+        edit.email = email
+        edit.phone = phone
+        edit.registerdate = registerdate
+        edit.interviewer = interviewer
+        edit.resume = resume
+        edit.experience = experience
+        edit.address = address
+        edit.tech_stack = tech_stack
+        edit.save()
+        messages.warning(request,"Data Updated Scuccessfully")
+        return redirect('home')
+    d=Candidate.objects.get(id=id)
+    # queryset=Candidate.objects.all()
+    context={"d":d}
+    return render(request,"recruit/edit.html",context)
+
+def delete(request,id):
+    d = Candidate.objects.get(id = id)
+    d.delete()
+    messages.error(request,"Data Deleted Succesfully")
+    return redirect('home')
 
 def home(request):
     queryset=Candidate.objects.all()

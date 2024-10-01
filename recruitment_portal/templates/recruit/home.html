@@ -31,7 +31,8 @@
         <td>{{ i.resume }}</td>
         <td>Not Updated</td>
         {% if request.user.is_authenticated %}
-        <td></td>
+        <td><a type="button" href="{%url 'editCandidate' i.id %}" class="btn btn-outline-primary">Edit</a> 
+          <a type = "button" class="btn btn-outline-danger" href="{%url 'delete' i.id %}">Delete</a></td>
         {% endif %}
 
       </tr>

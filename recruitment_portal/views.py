@@ -46,8 +46,6 @@ def add_candidate(request):
         email=request.POST.get('email')
         phone=request.POST.get('phone')
         registerdate=request.POST.get('registerdate')
-        firstround=request.POST.get('firstround')
-        secondround=request.POST.get('secondround')
         interviewer=request.POST.get('interviewer')
         resume=request.FILES.get('resume')
         experience=request.POST.get('experience')

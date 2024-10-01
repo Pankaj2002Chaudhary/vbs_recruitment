@@ -8,8 +8,6 @@ class Candidate(models.Model):
     email=models.EmailField()
     phone=models.BigIntegerField()
     registerdate=models.DateField(default='2024-01-01')
-    firstround=models.DateField(default='2024-01-01')
-    secondround=models.DateField(default='2024-01-01')
     interviewer=models.CharField(max_length=100)
     resume=models.FileField(default='none')
     experience=models.TextField()

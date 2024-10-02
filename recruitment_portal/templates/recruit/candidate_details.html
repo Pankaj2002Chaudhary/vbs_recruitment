@@ -84,8 +84,17 @@
             <span class="label">Interview Feedback:</span> Strong technical skills, great problem-solving ability.
         </div>
         <div class="section">
-            <span class="label">Resume:</span> <a href="resume.pdf" target="_blank">{{i.resume}}</a>
+            <span class="label">Resume:</span> 
+            {% if i.resume %}
+                <a href="{{ i.resume.url }}" target="_blank">View Resume</a>
+            {% else %}
+                No Resume Uploaded
+            {% endif %}
         </div>
+        
+        {% comment %} <div class="section">
+            <span class="label">Resume:</span> <a href="resume.pdf" target="_blank">{{i.resume}}</a>
+        </div> {% endcomment %}
         {% endfor %}
         {% if request.user.is_authenticated %}
         <button type="button" class="btn btn-outline-info" id="addfeedback">Add Feedback</button>

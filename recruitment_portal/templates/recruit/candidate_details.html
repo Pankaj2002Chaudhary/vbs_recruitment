@@ -629,6 +629,15 @@
         </div>
         
         {% comment %} <div class="section">
+            <span class="label">Resume:</span> 
+            {% if i.resume %}
+                <a href="{{ i.resume.url }}" target="_blank">View Resume</a>
+            {% else %}
+                No Resume Uploaded
+            {% endif %}
+        </div>
+        
+        {% comment %} <div class="section">
             <span class="label">Resume:</span> <a href="resume.pdf" target="_blank">{{i.resume}}</a>
         </div> {% endcomment %}
         {% comment %} {% endfor %}

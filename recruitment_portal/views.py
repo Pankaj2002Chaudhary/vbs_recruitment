@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -16,10 +18,15 @@ def login_page(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
 
         if user is None:
             messages.error(request, "User not found")
         else:
+            login(request, user)
             login(request, user)
             return redirect('home')
 
@@ -66,6 +73,16 @@ def candidate_details(request, id):
 
 @login_required(login_url="/login/")
 def add_candidate(request):
+    if request.method == 'POST':
+        form = CandidateForm(request.POST, request.FILES)  # Use the form for validation
+        if form.is_valid():
+            form.save()  # Save the candidate instance directly using the form
+            messages.success(request, "Candidate added successfully!")  # Optional success message
+            return redirect('home')
+    else:
+        form = CandidateForm()  # Create a new form instance for GET request
+
+    return render(request, 'recruit/add_candidate.html', {'form': form})
     if request.method == 'POST':
         form = CandidateForm(request.POST, request.FILES)  # Use the form for validation
         if form.is_valid():
@@ -187,6 +204,10 @@ def delete(request, id):
     candidate = get_object_or_404(Candidate, id=id)
     candidate.delete()
     messages.error(request, "Data Deleted Successfully")
+def delete(request, id):
+    candidate = get_object_or_404(Candidate, id=id)
+    candidate.delete()
+    messages.error(request, "Data Deleted Successfully")
     return redirect('home')
 
 
@@ -222,6 +243,14 @@ def home(request):
 class CandidateFormListCreate(generics.ListCreateAPIView):
     queryset = Candidate.objects.all()
     serializer_class = CandidateFormSerializer
+
+
+
+
+
+
+
+
 
 
 

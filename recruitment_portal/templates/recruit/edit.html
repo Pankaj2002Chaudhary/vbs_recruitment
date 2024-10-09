@@ -407,6 +407,7 @@ input[type="tel"],
 input[type="number"],
 input[type="file"],
 input[type="date"] {
+input[type="date"] {
     width: 97%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -422,11 +423,13 @@ input[type="number"]:focus {
 }
 
 #tech_stack, #address, #experience {
+#tech_stack, #address, #experience {
     width: 97%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
 
 button {
     width: 100%;
@@ -440,6 +443,24 @@ button {
 }
 
 button:hover {
+    background-color: #005b47; /* Darker shade for hover effect */
+}
+
+.view-resume-button {
+    margin-top: 10px;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.view-resume-button:hover {
+    background-color: #00796b; /* Change color on hover */
     background-color: #005b47; /* Darker shade for hover effect */
 }
 
@@ -486,12 +507,69 @@ button:hover {
             <label for="interviewer">Interviewer</label>
             <input type="text" id="interviewer" name="interviewer" value="{{ d.interviewer }}">
         </div>
+<div class="contain">
+    <h1>Edit Candidate</h1>
+    
+    <form id="registrationForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" value="{{ d.name }}">
+        </div>
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" value="{{ d.age }}">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="{{ d.email }}">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" value="{{ d.phone }}">
+        </div>
+        <div class="form-group">
+            <label for="interviewer">Interviewer</label>
+            <input type="text" id="interviewer" name="interviewer" value="{{ d.interviewer }}">
+        </div>
 
         <div class="form-group">
             <label for="date">Date of registration:</label>
             <input type="date" id="date" name="registerdate" value="{{ d.registerdate|date:'Y-m-d' }}">
         </div>
+        <div class="form-group">
+            <label for="date">Date of registration:</label>
+            <input type="date" id="date" name="registerdate" value="{{ d.registerdate|date:'Y-m-d' }}">
+        </div>
 
+        <div class="form-group">
+            <label for="experience">Experience</label>
+            <textarea id="experience" name="experience" rows="4" required>{{ d.experience }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="tech_stack">Tech Stack</label>
+            <textarea id="tech_stack" name="tech_stack" rows="4" required>{{ d.tech_stack }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address</label>
+            <textarea id="address" name="address" rows="4" required>{{ d.address }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="resume">Upload Resume</label>
+            <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx">
+            {% if d.resume %}
+                <p>Current Resume: 
+                    <a class="view-resume-button" href="{{ d.resume.url }}" target="_blank">View Resume</a>
+                </p>
+            {% endif %}
+        </div>
+
+        <button type="submit">Update</button>
+    </form>
+</div>
         <div class="form-group">
             <label for="experience">Experience</label>
             <textarea id="experience" name="experience" rows="4" required>{{ d.experience }}</textarea>

@@ -14,6 +14,8 @@ urlpatterns = [
   path('add_candidate/', add_candidate, name='add_candidate'),
   path('edit/<id>/',editCandidate,name='editCandidate'),
   path('delete/<id>/',delete,name='delete'),
+  path('add_feedback/<id>/',add_feedback,name='add_feedback'),
+
 ]
 
 

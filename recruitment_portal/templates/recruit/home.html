@@ -20,6 +20,7 @@
             <th scope="col">Feedback</th>
             {% if request.user.is_authenticated %}
             <th scope="col">Delete/Modify</th>
+            <th scope="col">Add Feedback</th>
             {% endif %}
         </tr>
     </thead>
@@ -64,6 +65,12 @@
                 </form>
             </td>
             {% endif %}
+            {% if request.user.is_authenticated %}
+            <td>
+                <a href="{% url 'add_feedback' i.id %}" class="btn btn-outline-primary btn-sm">Add Feedback</a>
+            </td>
+            {% endif %}
+
         </tr>
         {% endfor %}
     </tbody>

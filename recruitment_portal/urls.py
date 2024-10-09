@@ -15,3 +15,6 @@ urlpatterns = [
   path('edit/<id>/',editCandidate,name='editCandidate'),
   path('delete/<id>/',delete,name='delete'),
 ]
+
+
+

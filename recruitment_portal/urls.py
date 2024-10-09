@@ -1,6 +1,10 @@
 from django.contrib import admin
 from django.urls import path
 from recruitment_portal.views import *
+from . import views
+
+
+
 urlpatterns = [
   path('api/candidate-input',CandidateFormListCreate.as_view(),name='candidate-input'),
   path('', home, name='home'),

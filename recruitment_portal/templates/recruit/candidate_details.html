@@ -1,5 +1,541 @@
 {% extends "base.html" %}
 {% block start %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Profile</title>
+    <style>
+        .contain {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        h1 {
+            text-align: center;
+            color: #2980b9;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 5px solid #2980b9;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+        .label {
+            font-weight: bold;
+            color: #2980b9;
+        }
+        a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .feedback-section {
+            margin-top: 40px;
+        }
+        .feedback-list {
+            margin-bottom: 20px;
+        }
+        .feedback-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 5px solid #27ae60;
+            background-color: #e9f7ef;
+            border-radius: 4px;
+        }
+        .feedback-form {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f7f7f7;
+        }
+        .feedback-form h3 {
+            color: #2980b9;
+        }
+        .feedback-form label {
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 10px;
+        }
+        .feedback-form textarea,
+        .feedback-form input,
+        .feedback-form select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .feedback-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2980b9;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .feedback-form button:hover {
+            background-color: #21618c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contain">
+        <h1>Candidate Profile</h1>
+        <hr>
+        <!-- Candidate Details Section -->
+        <div class="section">
+            <span class="label">Name:</span> {{ candidate.name }}
+        </div>
+        <div class="section">
+            <span class="label">Age:</span> {{ candidate.age }}
+        </div>
+        <div class="section">
+            <span class="label">Phone:</span> {{ candidate.phone }}
+        </div>
+        <div class="section">
+            <span class="label">Email:</span> {{ candidate.email }}
+        </div>
+        <div class="section">
+            <span class="label">Interviewer LDAP:</span> {{ candidate.interviewer }}
+        </div>
+        <div class="section">
+            <span class="label">Register date:</span> {{ candidate.registerdate }}
+        </div>
+        <div class="section">
+            <span class="label">Experience:</span> {{ candidate.experience }}
+        </div>
+        <div class="section">
+            <span class="label">Tech Stack:</span> {{ candidate.tech_stack }}
+        </div>
+        <div class="section">
+            <span class="label">Address:</span> {{ candidate.address }}
+        </div>
+        <div class="section">
+            <span class="label">Resume:</span>
+            {% if candidate.resume %}
+                <a href="{{ candidate.resume.url }}" target="_blank">View Resume</a>
+            {% else %}
+                No Resume Uploaded
+            {% endif %}
+        </div>
+
+        <hr>
+        <!-- Feedback Section -->
+        <div class="feedback-section">
+            <h3>Feedback</h3>
+            <div class="feedback-list">
+                {% if feedbacks %}
+                    {% for feedback in feedbacks %}
+                        <div class="feedback-item">
+                            <span class="label">Interviewer:</span> {{ feedback.interviewer }} <br>
+                            <span class="label">Status:</span> {{ feedback.status }} <br>
+                            <span class="label">Feedback:</span> {{ feedback.feedback }} <br>
+                            <span class="label">Date:</span> {{ feedback.created_at }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No feedback available.</p>
+                {% endif %}
+            </div>
+
+            {% if request.user.is_authenticated %}
+                <hr>
+                <!-- Add Feedback Form -->
+                <div class="feedback-form">
+                    <h3>Add Feedback</h3>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="feedback">Feedback</label>
+                            {{ feedback_form.feedback }}
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            {{ feedback_form.status }}
+                        </div>
+                        <div class="form-group">
+                            <label for="interviewer">Interviewer</label>
+                            {{ feedback_form.interviewer }}
+                        </div>
+                        <button type="submit">Submit Feedback</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+{% block start %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Profile</title>
+    <style>
+        .contain {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        h1 {
+            text-align: center;
+            color: #2980b9;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 5px solid #2980b9;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+        .label {
+            font-weight: bold;
+            color: #2980b9;
+        }
+        a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .feedback-section {
+            margin-top: 40px;
+        }
+        .feedback-list {
+            margin-bottom: 20px;
+        }
+        .feedback-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-left: 5px solid #27ae60;
+            background-color: #e9f7ef;
+            border-radius: 4px;
+        }
+        .feedback-form {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f7f7f7;
+        }
+        .feedback-form h3 {
+            color: #2980b9;
+        }
+        .feedback-form label {
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 10px;
+        }
+        .feedback-form textarea,
+        .feedback-form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .feedback-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2980b9;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .feedback-form button:hover {
+            background-color: #21618c;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contain">
+        <h1>Candidate Profile</h1>
+        <hr>
+        <!-- Candidate Details Section -->
+        <div class="section">
+            <span class="label">Name:</span> {{ candidate.name }}
+        </div>
+        <div class="section">
+            <span class="label">Age:</span> {{ candidate.age }}
+        </div>
+        <div class="section">
+            <span class="label">Phone:</span> {{ candidate.phone }}
+        </div>
+        <div class="section">
+            <span class="label">Email:</span> {{ candidate.email }}
+        </div>
+        <div class="section">
+            <span class="label">Interviewer LDAP:</span> {{ candidate.interviewer }}
+        </div>
+        <div class="section">
+            <span class="label">Register date:</span> {{ candidate.registerdate }}
+        </div>
+        <div class="section">
+            <span class="label">Experience:</span> {{ candidate.experience }}
+        </div>
+        <div class="section">
+            <span class="label">Tech Stack:</span> {{ candidate.tech_stack }}
+        </div>
+        <div class="section">
+            <span class="label">Address:</span> {{ candidate.address }}
+        </div>
+        <div class="section">
+            <span class="label">Resume:</span>
+            {% if candidate.resume %}
+                <a href="{{ candidate.resume.url }}" target="_blank">View Resume</a>
+            {% else %}
+                No Resume Uploaded
+            {% endif %}
+        </div>
+
+        <hr>
+        <!-- Feedback Section -->
+        <div class="feedback-section">
+            <h3>Feedback</h3>
+            <div class="feedback-list">
+                {% if feedbacks %}
+                    {% for feedback in feedbacks %}
+                        <div class="feedback-item">
+                            <span class="label">Interviewer:</span> {{ feedback.interviewer }} <br>
+                            <span class="label">Status:</span> {{ feedback.status }} <br>
+                            <span class="label">Feedback:</span> {{ feedback.feedback }} <br>
+                            <span class="label">Date:</span> {{ feedback.created_at }}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No feedback available.</p>
+                {% endif %}
+            </div>
+
+            {% if request.user.is_authenticated %}
+                <hr>
+                <!-- Add Feedback Form -->
+                <div class="feedback-form">
+                    <h3>Add Feedback</h3>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="feedback">Feedback</label>
+                            {{ feedback_form.feedback }}
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            {{ feedback_form.status }}
+                        </div>
+                        <button type="submit">Submit Feedback</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
+{% endblock %} {% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+{% block start %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Profile</title>
+    <style>
+        .contain {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        h1 {
+            text-align: center;
+            color: #2980b9;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 5px solid #2980b9;
+            background-color: #ecf0f1;
+        }
+        .label {
+            font-weight: bold;
+            color: #2980b9;
+        }
+        a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contain">
+        <h1>Candidate Profile</h1>
+        <hr>
+        <div class="section">
+            <span class="label">Name:</span> {{ candidate.name }}
+        </div>
+        <div class="section">
+            <span class="label">Age:</span> {{ candidate.age }}
+        </div>
+        <div class="section">
+            <span class="label">Phone:</span> {{ candidate.phone }}
+        </div>
+        <div class="section">
+            <span class="label">Email:</span> {{ candidate.email }}
+        </div>
+        <div class="section">
+            <span class="label">Interviewer LDAP:</span> {{ candidate.interviewer }}
+        </div>
+        <div class="section">
+            <span class="label">Register date:</span> {{ candidate.registerdate }}
+        </div>
+        <div class="section">
+            <span class="label">Experience:</span> {{ candidate.experience }}
+        </div>
+        <div class="section">
+            <span class="label">Tech Stack:</span> {{ candidate.tech_stack }}
+        </div>
+        <div class="section">
+            <span class="label">Address:</span> {{ candidate.address }}
+        </div>
+        <div class="section">
+            <span class="label">Resume:</span>
+            {% if candidate.resume %}
+                <a href="{{ candidate.resume.url }}" target="_blank">View Resume</a>
+            {% else %}
+                No Resume Uploaded
+            {% endif %}
+        </div>
+
+        <hr>
+        <h3>Feedback</h3>
+        {% if feedbacks %}
+            {% for feedback in feedbacks %}
+                <div class="section">
+                    <span class="label">Interviewer:</span> {{ feedback.interviewer }} <br>
+                    <span class="label">Status:</span> {{ feedback.status }} <br>
+                    <span class="label">Feedback:</span> {{ feedback.feedback }} <br>
+                    <span class="label">Date:</span> {{ feedback.created_at }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No feedback available.</p>
+        {% endif %}
+        
+        {% if request.user.is_authenticated %}
+            <hr>
+            <h3>Add Feedback</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {{ feedback_form.as_p }}
+                <button type="submit" class="btn btn-outline-info">Submit Feedback</button>
+            </form>
+        {% endif %}
+    </div>
+
+</body>
+</html>
+{% endblock %} {% endcomment %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends "base.html" %}
+{% block start %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -84,15 +620,23 @@
             <span class="label">Interview Feedback:</span> Strong technical skills, great problem-solving ability.
         </div>
         <div class="section">
-            <span class="label">Resume:</span> <a href="resume.pdf" target="_blank">{{i.resume}}</a>
+            <span class="label">Resume:</span> 
+            {% if i.resume %}
+                <a href="{{ i.resume.url }}" target="_blank">View Resume</a>
+            {% else %}
+                No Resume Uploaded
+            {% endif %}
         </div>
-        {% endfor %}
+        
+        {% comment %} <div class="section">
+            <span class="label">Resume:</span> <a href="resume.pdf" target="_blank">{{i.resume}}</a>
+        </div> {% endcomment %}
+        {% comment %} {% endfor %}
         {% if request.user.is_authenticated %}
         <button type="button" class="btn btn-outline-info" id="addfeedback">Add Feedback</button>
         {% endif %}
     </div>
 </body>
-</html>
+</html> {% endcomment %}
 
 
-{% endblock %}

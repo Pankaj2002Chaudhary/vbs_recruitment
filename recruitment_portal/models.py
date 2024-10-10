@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+# Create your models here.
 class Candidate(models.Model):
     id = models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')   
     name = models.CharField(max_length=100, default="None")

@@ -364,10 +364,55 @@ class CandidateFormListCreate(generics.ListCreateAPIView):
     queryset = Candidate.objects.all()
     serializer_class = CandidateFormSerializer
 
+from django.contrib.auth.models import User
+from django.contrib import messages
+from .models import Team, Employee, POC, Interviewer
+from .forms import RegistrationForm
+from django.contrib.auth.models import Group
 
+def register_member(request):
+    # Retrieve the manager's team based on the logged-in user's name or identifier
+        # Assuming the manager's name matches the logged-in user's username
+    manager = Manager.objects.get(manager_name=request.user.username)
+    team = manager.team
+    print(team)
 
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            role = form.cleaned_data['role']
+            name = form.cleaned_data['name']
 
+            # Create the User object
+            user = User.objects.create_user(username=username, password=password)
+            user.save()
 
+            # Assign the user to a group based on their role
+            group_name = None
+            if role == 'employee':
+                Employee.objects.create(employee_name=name, team=team)
+                group_name = 'Team_employee'
+            elif role == 'poc':
+                POC.objects.create(poc_name=name, team=team)
+                group_name = 'Team_poc'
+            elif role == 'interviewer':
+                Interviewer.objects.create(interviewer_name=name, team=team)
+                group_name = 'Team_interviewer'
+
+            if group_name:
+                group, created = Group.objects.get_or_create(name=group_name)
+                user.groups.add(group)  # Assign the user to the group
+                user.save()
+
+            messages.success(request, f'{role.capitalize()} registered successfully with username: {username}')
+            return redirect('leads_managers')
+
+    else:
+        form = RegistrationForm()
+
+    return render(request, 'recruit/register_member.html', {'form': form, 'team': team})
 
 
 

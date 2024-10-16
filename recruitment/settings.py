@@ -95,17 +95,17 @@ WSGI_APPLICATION = 'recruitment.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "vaco_recruit_data",
-        "USER": "vacobinary",
-        "PASSWORD": "Vaco@123",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'vaco_database',
+        'USER': 'vacobinary1',
+        'PASSWORD': 'Vaco@123',
+        'HOST': '127.0.0.1',  # or your database host
+        'PORT': '5432',       # or your database port
     }
 }
-
 
 
 # Password validation

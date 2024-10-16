@@ -1,5 +1,3 @@
-# forms.py
-
 from django import forms
 from .models import Candidate
 from .models import Feedback
@@ -7,8 +5,7 @@ from .models import Feedback
 class CandidateForm(forms.ModelForm):
     class Meta:
         model = Candidate
-        fields = ['name', 'age', 'email', 'phone', 'interviewer', 'resume', 'experience', 'address', 'tech_stack', 'registerdate']
-
+        fields=['name', 'age','email','phone','registerdate','interviewer','experience','address','tech_stack', 'resume']
 
 
 class FeedbackForm(forms.ModelForm):
@@ -23,21 +20,9 @@ class FeedbackForm(forms.ModelForm):
         ('on-hold', 'On Hold')
     ]
     
-    INTERVIEWER_CHOICES = [
-        ('Akhil Bhatnagar', 'Akhil Bhatnagar'),
-        ('Prasenjith Jana', 'Prasenjith Jana'),
-        ('Parag Kayat', 'Parag Kayat'),
-        ('Trapti Kapkoti', 'Trapti Kapkoti')
-    ]
-
     status = forms.ChoiceField(choices=STATUS_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
-    interviewer = forms.ChoiceField(choices=INTERVIEWER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     
     class Meta:
         model = Feedback
-        fields = ['feedback', 'status', 'interviewer']
+        fields = ['feedback', 'status']
 
-# class FeedbackForm(forms.ModelForm):
-#     class Meta:
-#         model = Feedback
-#         fields = ['interviewer', 'status', 'feedback']

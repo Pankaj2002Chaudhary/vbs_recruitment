@@ -5,10 +5,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Candidate, Feedback
+from .models import Candidate,Feedback
 from .forms import CandidateForm, FeedbackForm  # Ensure you're importing your form
 from rest_framework import generics
 from .serializers import CandidateFormSerializer
+from django.http import HttpResponse  # For debugging purposes
 
 
 # Create your views here.
@@ -100,21 +101,14 @@ def add_candidate(request):
             form.save()  # Save the candidate instance directly using the form
             messages.success(request, "Candidate added successfully!")  # Optional success message
             return redirect('home')
+        else:
+            # Print form errors to debug
+            print(form.errors)  
+            return HttpResponse(f"Form errors: {form.errors}")
     else:
         form = CandidateForm()  # Create a new form instance for GET request
 
     return render(request, 'recruit/add_candidate.html', {'form': form})
-    if request.method == 'POST':
-        form = CandidateForm(request.POST, request.FILES)  # Use the form for validation
-        if form.is_valid():
-            form.save()  # Save the candidate instance directly using the form
-            messages.success(request, "Candidate added successfully!")  # Optional success message
-            return redirect('home')
-    else:
-        form = CandidateForm()  # Create a new form instance for GET request
-
-    return render(request, 'recruit/add_candidate.html', {'form': form})
-
 
 
 @login_required(login_url="/login/")
@@ -164,10 +158,7 @@ def editCandidate(request, id):
     return render(request, "recruit/edit.html", context)
 
 
-def delete(request, id):
-    candidate = get_object_or_404(Candidate, id=id)
-    candidate.delete()
-    messages.error(request, "Data Deleted Successfully")
+
 def delete(request, id):
     candidate = get_object_or_404(Candidate, id=id)
     candidate.delete()
@@ -177,7 +168,6 @@ def delete(request, id):
 
 def home(request):
     queryset = Candidate.objects.prefetch_related('feedbacks').all()
-
     if request.GET.get('search'):
         search = request.GET.get('search')
         queryset = queryset.filter(

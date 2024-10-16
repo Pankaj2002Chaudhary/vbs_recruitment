@@ -141,7 +141,6 @@
                 {% if feedbacks %}
                     {% for feedback in feedbacks %}
                         <div class="feedback-item">
-                            <span class="label">Interviewer:</span> {{ feedback.interviewer }} <br>
                             <span class="label">Status:</span> {{ feedback.status }} <br>
                             <span class="label">Feedback:</span> {{ feedback.feedback }} <br>
                             <span class="label">Date:</span> {{ feedback.created_at }}

@@ -58,6 +58,12 @@ button:hover {
 <div class="contain">
     <form class="login-form" method="post">
         {% csrf_token %}
+        {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
         <h1>Login</h1>
         <div class="input-group">
             <label for="username">Username</label>

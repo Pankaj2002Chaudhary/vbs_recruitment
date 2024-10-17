@@ -14,24 +14,73 @@ from django.http import HttpResponse  # For debugging purposes
 
 # Create your views here.
 
+# def login_page(request):
+#     if request.method == "POST":
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#         user = authenticate(request, username=username, password=password)
+#     if request.method == "POST":
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#         user = authenticate(request, username=username, password=password)
+
+#         if user is None:
+#             messages.error(request, "User not found")
+#         else:
+#             login(request, user)
+#             login(request, user)
+#             return redirect('home')
+
+#     return render(request, 'recruit/login.html')
+from django.contrib.auth import login
+
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
 def login_page(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-    if request.method == "POST":
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
 
-        if user is None:
-            messages.error(request, "User not found")
+        if user is not None:  # Check if authentication is successful
+            login(request, user)  # Log the user in
+            if user.is_superuser:
+                return redirect('/admin/')
+            # Redirect based on the user's group
+            if user.groups.filter(name='Team_leads_managers').exists():
+                return redirect('leads_managers')
+            
+            elif user.groups.filter(name='TA_Manager').exists():
+                return redirect('ta_managers')
+            
+            elif user.groups.filter(name='TA_member').exists():
+                return redirect('ta_members')
+            
+            elif user.groups.filter(name='Team_interviewer').exists():
+                return redirect('home')
+            
+            elif user.groups.filter(name='Team_poc').exists():
+                return redirect('home')
+            
+            else:
+                return redirect('login')  # Default redirect if no group matches
         else:
-            login(request, user)
-            login(request, user)
-            return redirect('home')
+            messages.error(request, "Invalid username or password")  # Display error message
 
+    # Render the login page for GET request or failed login attempt
     return render(request, 'recruit/login.html')
+
+
+def leads_managers(request):
+    return render(request, 'recruit/team_manager_leads.html')
+
+def ta_managers(request):
+    return render(request, 'recruit/ta_manager.html')
+
+def ta_members(request):
+    return render(request, 'recruit/ta_members.html')
 
 
 def logout_page(request):
@@ -168,6 +217,8 @@ def delete(request, id):
 
 def home(request):
     queryset = Candidate.objects.prefetch_related('feedbacks').all()
+    user = request.user
+
     if request.GET.get('search'):
         search = request.GET.get('search')
         queryset = queryset.filter(
@@ -176,8 +227,14 @@ def home(request):
             Q(id__icontains=search) |
             Q(interviewer__icontains=search)
         )
-
-    return render(request, 'recruit/home.html', {'queryset': queryset})
+    context = {
+        'is_interviewer': user.groups.filter(name='Team_interviewer').exists() if user.is_authenticated else False,
+        'is_poc': user.groups.filter(name='Team_poc').exists() if user.is_authenticated else False,
+        'is_employee': user.groups.filter(name='Employee').exists() if user.is_authenticated else False,
+        # 'is_team_manager' : user.groups.filter(name="Team_leads_managers").exists() if user.is_authenticated else False,
+        'queryset':queryset,
+    }
+    return render(request, 'recruit/home.html', context)
 
 
 class CandidateFormListCreate(generics.ListCreateAPIView):

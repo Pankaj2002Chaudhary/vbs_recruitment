@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Candidate,Feedback
+from .models import *
 from .forms import CandidateForm, FeedbackForm  # Ensure you're importing your form
 from rest_framework import generics
 from .serializers import CandidateFormSerializer
@@ -218,6 +218,13 @@ def delete(request, id):
 def home(request):
     queryset = Candidate.objects.prefetch_related('feedbacks').all()
     user = request.user
+    if user.groups.filter(name='Team_poc').exists():
+        # Assuming user is related to a POC object, and POC is linked to a team
+        poc = POC.objects.filter(poc_name=user.username).first()
+        if poc:
+            team_id = poc.team.team_id
+            queryset = queryset.filter(team_id=team_id)
+
 
     if request.GET.get('search'):
         search = request.GET.get('search')

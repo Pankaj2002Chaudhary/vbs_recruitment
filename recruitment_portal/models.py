@@ -34,7 +34,7 @@ class Employee(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)  # FK to Team
 
     def __str__(self):
-        return self.name
+        return self.employee_name
 
 
 class Interviewer(models.Model):
@@ -43,7 +43,7 @@ class Interviewer(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)  # FK to Team
 
     def __str__(self):
-        return self.name
+        return self.interviewer_name
 
 
 class POC(models.Model):

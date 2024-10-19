@@ -228,12 +228,15 @@ def home(request):
 
     if request.GET.get('search'):
         search = request.GET.get('search')
-        queryset = queryset.filter(
-            Q(name__icontains=search) |
-            Q(email__icontains=search) |
-            Q(id__icontains=search) |
-            Q(interviewer__icontains=search)
-        )
+        if search.lower() == 'none':
+            queryset = queryset.filter(interviewer__isnull=True)        
+        else:
+            queryset = queryset.filter(
+                Q(name__icontains=search) |
+                Q(email__icontains=search) |
+                Q(id__icontains=search) |
+                Q(interviewer__interviewer_name__icontains=search)
+            )
     context = {
         'is_interviewer': user.groups.filter(name='Team_interviewer').exists() if user.is_authenticated else False,
         'is_poc': user.groups.filter(name='Team_poc').exists() if user.is_authenticated else False,

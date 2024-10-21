@@ -79,8 +79,10 @@ def leads_managers(request):
 def ta_managers(request):
     return render(request, 'recruit/ta_manager.html')
 
+@login_required
 def ta_members(request):
-    return render(request, 'recruit/ta_members.html')
+    is_ta_member = request.user.groups.filter(name='TA_member').exists()
+    return render(request, 'recruit/ta_members.html',{'is_ta_member':is_ta_member})
 
 
 def logout_page(request):
@@ -141,15 +143,13 @@ def candidate_details(request, id):
     }
     return render(request, "recruit/candidate_details.html", context)
 
-
-@login_required(login_url="/login/")
 def add_candidate(request):
     if request.method == 'POST':
         form = CandidateForm(request.POST, request.FILES)  # Use the form for validation
         if form.is_valid():
             form.save()  # Save the candidate instance directly using the form
             messages.success(request, "Candidate added successfully!")  # Optional success message
-            return redirect('home')
+            return redirect('ta_members')
         else:
             # Print form errors to debug
             print(form.errors)  

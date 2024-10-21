@@ -1,6 +1,107 @@
-{% extends "base.html" %}
-{% block start%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruitment Portal</title>
+    <style>
+        /* .top img{
+    margin-left: 43%;
+    /* margin-right: 40%; */
+    /* height: 60px;   */
+          /* Set a height if needed */
 
-<h1> This is TA members page </h1>
-<a href="{% url 'home' %}">Common page</a>
-{% endblock %}
+*/
+.top {
+    text-align: center; /* Centers horizontally */
+    height: 100%;      /* Full height */
+}
+
+.centered-image {
+    max-width: 100%; /* Responsive */
+    height: 60px;    /* Maintain aspect ratio */
+    display: block;  /* Necessary for margin auto to work */
+    margin: auto;    /* Center image */
+}
+
+.navbar {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 900px;
+}
+
+.navbar-items {
+    display: flex;
+}
+
+.navbar-items a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: background 0.3s;
+    padding-left: 30px;
+}
+
+.navbar-items a:hover {
+    background-color: #555;
+}
+
+.search-container {
+    display: flex;
+}
+
+.search-box {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    width: 200px;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+p{
+    margin-left: 90%;
+}
+
+
+</style>
+</head>
+<body>
+    <header>
+        <div class="top"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2QmZUlZ4IdbKTQ0tBkx1szN2ES2US1QkwqQ&s" class="centered-image"><p>{{ user.username }}</p></div>
+
+        <nav class="navbar">
+                <div class="navbar-items">
+                    <form>
+                    <div class="search-container">
+                        <input type="search" placeholder="Search..." class="search-box" name="search">
+                        <button class="search-button" type="submit">search</button>
+                    </div>
+                    </form>
+                    <div class="navbar-container"></div>
+                    <a href="{% url 'home' %}">Home</a>
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'logout' %}">Logout</a>
+                                {% if is_ta_member %}
+                                    <a href="{% url 'add_candidate' %}">Add Candidate</a>
+                                {% endif %}
+                    {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+                    {% endif %}
+
+                </div>
+               
+            </div>
+        </nav>
+    </header>
+</body>
+</html>

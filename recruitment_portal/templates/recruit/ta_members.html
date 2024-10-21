@@ -88,7 +88,7 @@ p{
                     </div>
                     </form>
                     <div class="navbar-container"></div>
-                    <a href="">Home</a>
+                    <a href="{% url 'ta_members' %}">Home</a>
                     {% if request.user.is_authenticated %}
                     <a href="{% url 'logout' %}">Logout</a>
                                 {% if is_ta_member %}
@@ -103,6 +103,11 @@ p{
             </div>
         </nav>
     </header>
+    <div class="container">
+        {% block start %}
+        
+        {% endblock %}
+    </div>
     <div class="container">
 <h1> This is TA member dashboard</h1>
 <a href=""></a>

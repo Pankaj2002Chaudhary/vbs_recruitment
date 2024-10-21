@@ -59,10 +59,10 @@ def login_page(request):
                 return redirect('ta_members')
             
             elif user.groups.filter(name='Team_interviewer').exists():
-                return redirect('home')
+                return redirect('common_page')
             
             elif user.groups.filter(name='Team_poc').exists():
-                return redirect('home')
+                return redirect('common_page')
             
             else:
                 return redirect('login')  # Default redirect if no group matches
@@ -110,7 +110,7 @@ def add_feedback(request,id):
             feedback.candidate = candidate  # Associate the feedback with the candidate
             feedback.save()
             messages.success(request, "Feedback added successfully!")
-            return redirect('home')
+            return redirect('common_page')
     else:
         feedback_form = FeedbackForm()
 
@@ -197,7 +197,7 @@ def editCandidate(request, id):
         d.save()
 
         messages.success(request, "Candidate details updated successfully!")
-        return redirect('home')
+        return redirect('common_page')
 
     # Render the form with existing candidate and feedback data
     context = {
@@ -212,10 +212,10 @@ def delete(request, id):
     candidate = get_object_or_404(Candidate, id=id)
     candidate.delete()
     messages.error(request, "Data Deleted Successfully")
-    return redirect('home')
+    return redirect('common_page')
 
 
-def home(request):
+def common_page(request):
     queryset = Candidate.objects.prefetch_related('feedbacks').all()
     user = request.user
     if user.groups.filter(name='Team_poc').exists():
@@ -244,7 +244,7 @@ def home(request):
         # 'is_team_manager' : user.groups.filter(name="Team_leads_managers").exists() if user.is_authenticated else False,
         'queryset':queryset,
     }
-    return render(request, 'recruit/home.html', context)
+    return render(request, 'recruit/common_page.html', context)
 
 
 class CandidateFormListCreate(generics.ListCreateAPIView):

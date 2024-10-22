@@ -7,7 +7,7 @@ from . import views
 
 urlpatterns = [
   path('api/candidate-input',CandidateFormListCreate.as_view(),name='candidate-input'),
-  # path('', home, name='home'),
+  path('', landing_page, name='landing_page'),
   path('common_page/',common_page, name='common_page'),
   path('login/', login_page, name='login'),
   path('logout/',logout_page,name="logout"),

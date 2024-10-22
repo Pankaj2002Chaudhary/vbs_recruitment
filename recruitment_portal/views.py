@@ -247,6 +247,9 @@ def common_page(request):
     return render(request, 'recruit/common_page.html', context)
 
 
+def landing_page(request):
+    return render(request, 'recruit/landing_page.html')
+
 class CandidateFormListCreate(generics.ListCreateAPIView):
     queryset = Candidate.objects.all()
     serializer_class = CandidateFormSerializer

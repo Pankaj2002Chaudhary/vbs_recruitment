@@ -11,7 +11,7 @@
    margin-top: 5%;
 }
 
-.login-form h1 {
+ h1 {
     text-align: center; /* Center the heading */
     margin-bottom: 20px; /* Spacing below the heading */
     color: #00796b; /* Teal color */
@@ -35,7 +35,7 @@
     border-radius: 5px; /* Rounded input corners */
 }
 
-button {
+.submit-btn {
     width: 100%; /* Full width button */
     margin-left: 3%;
     padding: 10px; /* Padding inside button */
@@ -49,22 +49,67 @@ button {
     
 }
 
-button:hover {
+.submit-btn:hover {
     background-color: #004d40; /* Darker teal on hover */
+}
+/* Custom Red Alert Box */
+.custom-alert {
+  background-color: #ff4d4d; /* Red color */
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  position: relative;
+  margin: 20px 0;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.4s ease;
+}
+
+/* Close Button */
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+/* Slide Down Animation */
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 
 </style>
 <div class="contain">
+    <h1>Login</h1>
     <form class="login-form" method="post">
         {% csrf_token %}
         {% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-{% endif %}
+        {% for message in messages %}
+        {% if message.tags == 'error' %}
+          <div class="custom-alert">
+            <span>{{ message }}</span>
+          </div>
+          {% endif %}
+          {% endfor %}
+          <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+      {% endif %}
+      
 
-        <h1>Login</h1>
+       
         <div class="input-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" placeholder="Enter username" required>
@@ -73,7 +118,7 @@ button:hover {
             <label for="password">Password</label>
             <input type="password" id="password" name="password" placeholder="Enter password" required>
         </div>
-        <button type="submit">Login</button>
+        <button class="submit-btn" type="submit">Login</button>
     </form>
 </div>
 {% endblock %}

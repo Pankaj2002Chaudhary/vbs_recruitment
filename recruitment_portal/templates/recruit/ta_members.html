@@ -5,13 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recruitment Portal</title>
     <style>
-        /* .top img{
-    margin-left: 43%;
-    /* margin-right: 40%; */
-    /* height: 60px;   */
-          /* Set a height if needed */
+.popup {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: none;  /* Initially hidden */
+    animation: fadeIn 1s;
+}
 
-*/
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
 .top {
     text-align: center; /* Centers horizontally */
     height: 100%;      /* Full height */
@@ -102,6 +114,16 @@ p{
                
             </div>
         </nav>
+        <!-- Pop-up Message -->
+        {% if messages %}
+        {% for message in messages %}
+        {%if message.tags == 'success' %}
+        <div id="popup" class="popup">
+            <span>{{ message }}</span>
+        </div>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
     </header>
     <div class="container">
         {% block start %}
@@ -110,7 +132,18 @@ p{
     </div>
     <div class="container">
 <h1> This is TA member dashboard</h1>
-<a href=""></a>
+<a href="{% url 'common_page' %}">Common Page</a>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var popup = document.getElementById('popup');
+            if (popup) {
+                popup.style.display = 'block';  // Show the pop-up
+                setTimeout(function() {
+                    popup.style.display = 'none';  // Hide after 10 seconds
+                }, 5000);  // 10 seconds in milliseconds
+            }
+        });
+    </script>
 </body>
 </html>

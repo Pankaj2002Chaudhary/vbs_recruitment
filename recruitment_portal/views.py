@@ -32,11 +32,28 @@ from django.http import HttpResponse  # For debugging purposes
 #             return redirect('home')
 
 #     return render(request, 'recruit/login.html')
-from django.contrib.auth import login
 
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+
+
+def landing_page(request):
+    active_url = None
+    
+    if request.user.is_authenticated:
+        if request.user.groups.filter(name='TA_member').exists():
+            active_url = reverse('ta_members')  # URL name for TAMembers
+        elif request.user.groups.filter(name='TA_Manager').exists():
+            active_url = reverse('ta_managers')  # URL name for Managers
+        elif request.user.groups.filter(name='Team_leads_managers').exists():
+            active_url = reverse('leads_managers')  # URL name for Interviewers
+        # Add other conditions as needed for Employee, POC, etc.
+    if isinstance(active_url, HttpResponseRedirect):
+        active_url = active_url.url
+    return render(request, 'recruit/landing_page.html', {'active_url': active_url})
 
 def login_page(request):
     if request.method == "POST":
@@ -79,7 +96,6 @@ def leads_managers(request):
 def ta_managers(request):
     return render(request, 'recruit/ta_manager.html')
 
-@login_required
 def ta_members(request):
     is_ta_member = request.user.groups.filter(name='TA_member').exists()
     return render(request, 'recruit/ta_members.html',{'is_ta_member':is_ta_member})
@@ -87,7 +103,7 @@ def ta_members(request):
 
 def logout_page(request):
     logout(request)
-    return redirect('/login/')
+    return redirect('landing_page')
 
 
 
@@ -247,8 +263,6 @@ def common_page(request):
     return render(request, 'recruit/common_page.html', context)
 
 
-def landing_page(request):
-    return render(request, 'recruit/landing_page.html')
 
 class CandidateFormListCreate(generics.ListCreateAPIView):
     queryset = Candidate.objects.all()

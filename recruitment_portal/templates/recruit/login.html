@@ -1,124 +1,128 @@
-{% extends "base.html" %}
-{% block start %}
-<style>
-.contain {
-    background-color: #ffffff; 
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    padding: 40px; /* Inner spacing */
-   margin-left: 35%;
-   margin-right: 35%;
-   margin-top: 5%;
-}
+<!DOCTYPE html>
+<head>
 
- h1 {
-    text-align: center; /* Center the heading */
-    margin-bottom: 20px; /* Spacing below the heading */
-    color: #00796b; /* Teal color */
-}
+</head>
+<body>
 
-.input-group {
-    margin-bottom: 15px; /* Spacing between input fields */
-}
-
-.input-group label {
-    display: block; /* Make labels block-level */
-    margin-bottom: 5px; /* Spacing below labels */
-    color: black; /* Dark gray for labels */
-    font-weight: bold;
-}
-
-.input-group input {
-    width: 100%; /* Full width input */
-    padding: 10px; /* Padding inside input */
-    border: 1px solid #00796b; /* Teal border */
-    border-radius: 5px; /* Rounded input corners */
-}
-
-.submit-btn {
-    width: 100%; /* Full width button */
-    margin-left: 3%;
-    padding: 10px; /* Padding inside button */
-    background-color: #00796b; /* Teal background */
-    color: white; /* White text */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded button corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    font-size: 16px; /* Button text size */
-    transition: background-color 0.3s; /* Smooth transition */
+  <style>
+    .contain {
+      background-color: #ffffff; 
+      border-radius: 10px; /* Rounded corners */
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+      padding: 40px; /* Inner spacing */
+      margin-left: 35%;
+      margin-right: 35%;
+      margin-top: 5%;
+    }
     
-}
-
-.submit-btn:hover {
-    background-color: #004d40; /* Darker teal on hover */
-}
-/* Custom Red Alert Box */
-.custom-alert {
-  background-color: #ff4d4d; /* Red color */
-  color: white;
-  padding: 15px 20px;
-  border-radius: 8px;
-  position: relative;
-  margin: 20px 0;
-  font-size: 16px;
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  animation: slideDown 0.4s ease;
-}
-
-/* Close Button */
-.close-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-  margin-left: 15px;
-}
-
-/* Slide Down Animation */
-@keyframes slideDown {
-  from {
-    transform: translateY(-10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-
-</style>
-<div class="contain">
-    <h1>Login</h1>
-    <form class="login-form" method="post">
-        {% csrf_token %}
-        {% if messages %}
-        {% for message in messages %}
-        {% if message.tags == 'error' %}
-          <div class="custom-alert">
-            <span>{{ message }}</span>
-          </div>
-          {% endif %}
-          {% endfor %}
-          <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
-      {% endif %}
+    h1 {
+      text-align: center; /* Center the heading */
+      margin-bottom: 20px; /* Spacing below the heading */
+      color: #00796b; /* Teal color */
+    }
+    
+    .input-group {
+      margin-bottom: 15px; /* Spacing between input fields */
+    }
+    
+    .input-group label {
+      display: block; /* Make labels block-level */
+      margin-bottom: 5px; /* Spacing below labels */
+      color: black; /* Dark gray for labels */
+      font-weight: bold;
+    }
+    
+    .input-group input {
+      width: 100%; /* Full width input */
+      padding: 10px; /* Padding inside input */
+      border: 1px solid #00796b; /* Teal border */
+      border-radius: 5px; /* Rounded input corners */
+    }
+    
+    .submit-btn {
+      width: 100%; /* Full width button */
+      margin-left: 3%;
+      padding: 10px; /* Padding inside button */
+      background-color: #00796b; /* Teal background */
+      color: white; /* White text */
+      border: none; /* No border */
+      border-radius: 5px; /* Rounded button corners */
+      cursor: pointer; /* Pointer cursor on hover */
+      font-size: 16px; /* Button text size */
+      transition: background-color 0.3s; /* Smooth transition */
       
-
-       
-        <div class="input-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="Enter username" required>
-        </div>
-        <div class="input-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter password" required>
-        </div>
-        <button class="submit-btn" type="submit">Login</button>
-    </form>
+    }
+    
+    .submit-btn:hover {
+      background-color: #004d40; /* Darker teal on hover */
+    }
+    /* Custom Red Alert Box */
+    .custom-alert {
+      background-color: #ff4d4d; /* Red color */
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      position: relative;
+      margin: 20px 0;
+      font-size: 16px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      animation: slideDown 0.4s ease;
+    }
+    
+    /* Close Button */
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      margin-left: 15px;
+    }
+    
+    /* Slide Down Animation */
+    @keyframes slideDown {
+      from {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    
+    </style>
+<div class="contain">
+  <h1>Login</h1>
+  <form class="login-form" method="post">
+    {% csrf_token %}
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="custom-alert">
+      <span>{{ message }}</span>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+    {% endif %}
+    
+    
+    
+    <div class="input-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="Enter username" required>
+    </div>
+    <div class="input-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Enter password" required>
+    </div>
+    <button class="submit-btn" type="submit">Login</button>
+  </form>
 </div>
-{% endblock %}
+</body>

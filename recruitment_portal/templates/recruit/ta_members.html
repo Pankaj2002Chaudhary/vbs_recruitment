@@ -125,15 +125,12 @@ p{
         {% endfor %}
         {% endif %}
     </header>
-    <div class="container">
-        {% block start %}
-        
-        {% endblock %}
-    </div>
-    <div class="container">
-<h1> This is TA member dashboard</h1>
-<a href="{% url 'common_page' %}">Common Page</a>
-    </div>
+     {% block start %}
+        <div class="container">
+    <h1> This is TA member dashboard</h1>
+    <a href="{% url 'landing_page' %}">Common Page</a>
+        </div>
+     {% endblock %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var popup = document.getElementById('popup');

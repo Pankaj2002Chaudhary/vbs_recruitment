@@ -94,7 +94,24 @@ def leads_managers(request):
     return render(request, 'recruit/team_manager_leads.html')
 
 def ta_managers(request):
-    return render(request, 'recruit/ta_manager.html')
+    try:
+        # Get the TA Manager linked to the logged-in user
+        ta_manager = TAManager.objects.get(name=request.user.username)
+
+        # Get the TA team of this manager
+        ta_team = ta_manager.ta_team
+
+        # Get all members belonging to this TA team
+        ta_members = TAMember.objects.filter(ta_team=ta_team)
+
+        # Get candidates added by members of this TA team
+        candidates = Candidate.objects.filter(ta_member__in=ta_members)
+
+    except TAManager.DoesNotExist:
+        # If the logged-in user is not a TA Manager, redirect them
+        return redirect('no_access')
+
+    return render(request, 'recruit/ta_manager.html',{'candidates': candidates})
 
 @login_required
 def ta_members(request):
@@ -263,13 +280,21 @@ def delete(request, id):
 def common_page(request):
     queryset = Candidate.objects.prefetch_related('feedbacks').all()
     user = request.user
-    if user.groups.filter(name='Team_poc').exists():
-        # Assuming user is related to a POC object, and POC is linked to a team
-        poc = POC.objects.filter(poc_name=user.username).first()
-        if poc:
-            team_id = poc.team.team_id
-            queryset = queryset.filter(team_id=team_id)
+    # if user.groups.filter(name='Team_poc').exists():
+    #     # Assuming user is related to a POC object, and POC is linked to a team
+    #     poc = POC.objects.filter(poc_name=user.username).first()
+    #     if poc:
+    #         team_id = poc.team.team_id
+    #         queryset = queryset.filter(team_id=team_id)
 
+    try:
+        interview = Interviewer.objects.get(user=request.user)
+    except Interviewer.DoesNotExist:
+        return redirect('no_access')  # Redirect if user is not a TA member
+
+    # Fetch candidates added by the logged-in TA member
+    
+    candidates = Candidate.objects.filter(interviewer=interview)
 
     if request.GET.get('search'):
         search = request.GET.get('search')
@@ -288,6 +313,7 @@ def common_page(request):
         'is_employee': user.groups.filter(name='Employee').exists() if user.is_authenticated else False,
         # 'is_team_manager' : user.groups.filter(name="Team_leads_managers").exists() if user.is_authenticated else False,
         'queryset':queryset,
+        # 'candidates':candidates,
     }
     return render(request, 'recruit/common_page.html', context)
 

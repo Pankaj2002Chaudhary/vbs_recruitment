@@ -96,9 +96,18 @@ def leads_managers(request):
 def ta_managers(request):
     return render(request, 'recruit/ta_manager.html')
 
+@login_required
 def ta_members(request):
-    is_ta_member = request.user.groups.filter(name='TA_member').exists()
-    return render(request, 'recruit/ta_members.html',{'is_ta_member':is_ta_member})
+    # Get the TA member associated with the logged-in user
+    try:
+        ta_member = TAMember.objects.get(user=request.user)
+    except TAMember.DoesNotExist:
+        return redirect('no_access')  # Redirect if user is not a TA member
+
+    # Fetch candidates added by the logged-in TA member
+    
+    candidates = Candidate.objects.filter(ta_member_id=ta_member)
+    return render(request, 'recruit/ta_members.html', {'candidates': candidates})
 
 
 def logout_page(request):
@@ -159,22 +168,42 @@ def candidate_details(request, id):
     }
     return render(request, "recruit/candidate_details.html", context)
 
+# def add_candidate(request):
+#     if request.method == 'POST':
+#         form = CandidateForm(request.POST, request.FILES)  # Use the form for validation
+#         if form.is_valid():
+#             form.save()  # Save the candidate instance directly using the form
+#             messages.success(request, "Candidate added successfully!")  # Optional success message
+#             return redirect('ta_members')
+#         else:
+#             # Print form errors to debug
+#             print(form.errors)  
+#             return HttpResponse(f"Form errors: {form.errors}")
+#     else:
+#         form = CandidateForm()  # Create a new form instance for GET request
+
+#     return render(request, 'recruit/add_candidate.html', {'form': form})
+
+@login_required
 def add_candidate(request):
+    try:
+        ta_member = TAMember.objects.get(user=request.user)
+    except TAMember.DoesNotExist:
+        return redirect('no_access')
+
     if request.method == 'POST':
-        form = CandidateForm(request.POST, request.FILES)  # Use the form for validation
+        form = CandidateForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()  # Save the candidate instance directly using the form
+            candidate = form.save(commit=False)
+            candidate.ta_member = ta_member  # Assign the logged-in TA member
+            candidate.save()
             messages.success(request, "Candidate added successfully!")  # Optional success message
-            return redirect('ta_members')
-        else:
-            # Print form errors to debug
-            print(form.errors)  
-            return HttpResponse(f"Form errors: {form.errors}")
+            return redirect('ta_members')  # Redirect to the TA members page
+
     else:
-        form = CandidateForm()  # Create a new form instance for GET request
+        form = CandidateForm()
 
     return render(request, 'recruit/add_candidate.html', {'form': form})
-
 
 @login_required(login_url="/login/")
 def editCandidate(request, id):
@@ -228,7 +257,7 @@ def delete(request, id):
     candidate = get_object_or_404(Candidate, id=id)
     candidate.delete()
     messages.error(request, "Data Deleted Successfully")
-    return redirect('common_page')
+    return redirect('ta_members')
 
 
 def common_page(request):

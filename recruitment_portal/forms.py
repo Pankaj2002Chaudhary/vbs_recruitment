@@ -6,7 +6,7 @@ class CandidateForm(forms.ModelForm):
     class Meta:
         model = Candidate
         fields=['name', 'age','email','phone','registerdate','interviewer','experience','address','tech_stack', 'resume']
-
+        
 
 class FeedbackForm(forms.ModelForm):
     STATUS_CHOICES = [

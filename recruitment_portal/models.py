@@ -73,10 +73,12 @@ class TAManager(models.Model):
 
 
 # TA Members model
+from django.contrib.auth.models import User
 class TAMember(models.Model):
     ta_member = models.AutoField(primary_key=True)  # Auto-increment primary key
     name = models.CharField(max_length=255)  # TA Member's name
     ta_team = models.ForeignKey(TATeam, on_delete=models.CASCADE)  # FK to TA team
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Link with Django User model
 
     def __str__(self):
         return self.name
@@ -84,7 +86,7 @@ class TAMember(models.Model):
 class Candidate(models.Model):
     id = models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')   
     name = models.CharField(max_length=255,default='none')  # Candidate's name
-    ta_member_id=models.ForeignKey('TAMember', on_delete=models.CASCADE,null=True,blank=True)
+    ta_member=models.ForeignKey('TAMember', on_delete=models.CASCADE,null=True,blank=True)
     team = models.ForeignKey('Team', on_delete=models.CASCADE, null=True,blank=True)  # FK to Team
     interviewer = models.ForeignKey('Interviewer', on_delete=models.SET_NULL, null=True,blank=True)  # FK to Interviewer, nullable
     poc = models.ForeignKey('POC', on_delete=models.SET_NULL, null=True,blank=True)  # FK to POC, nullable

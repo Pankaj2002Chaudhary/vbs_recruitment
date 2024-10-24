@@ -212,16 +212,6 @@ def add_candidate(request):
     try:
         # Check if the user is a TA member
         ta_member = TAMember.objects.filter(name=request.user.username).first()
-        ta_manager = None
-
-        if not ta_member:
-            # If not a TA member, check if the user is a TA manager
-            ta_manager = TAManager.objects.filter(name=request.user.username).first()
-
-        if not ta_member and not ta_manager:
-            # If the user is neither a TA member nor a TA manager, redirect them
-            return redirect('common_page')
-
     except Exception as e:
         print(e)
         return redirect('common_page')
@@ -230,13 +220,7 @@ def add_candidate(request):
         form = CandidateForm(request.POST, request.FILES)
         if form.is_valid():
             candidate = form.save(commit=False)
-
-            # Set the TA member or TA manager who added the candidate
-            if ta_member:
-                candidate.ta_member = ta_member
-            elif ta_manager:
-                candidate.ta_member = None  # Or handle this association as needed
-
+            candidate.ta_member = ta_member
             candidate.save()
             messages.success(request, "Candidate added successfully!")
             return redirect('ta_members' if ta_member else 'ta_managers')

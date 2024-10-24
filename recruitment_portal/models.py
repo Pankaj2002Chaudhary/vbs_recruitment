@@ -71,14 +71,11 @@ class TAManager(models.Model):
     def __str__(self):
         return self.name
 
-
 # TA Members model
-from django.contrib.auth.models import User
 class TAMember(models.Model):
     ta_member = models.AutoField(primary_key=True)  # Auto-increment primary key
     name = models.CharField(max_length=255)  # TA Member's name
     ta_team = models.ForeignKey(TATeam, on_delete=models.CASCADE)  # FK to TA team
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Link with Django User model
 
     def __str__(self):
         return self.name

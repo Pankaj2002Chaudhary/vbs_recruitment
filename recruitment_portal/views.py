@@ -92,7 +92,10 @@ def login_page(request):
 
 def leads_managers(request):
     return render(request, 'recruit/team_manager_leads.html')
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
+@login_required
 def ta_managers(request):
     try:
         # Get the TA Manager linked to the logged-in user
@@ -111,20 +114,22 @@ def ta_managers(request):
         # If the logged-in user is not a TA Manager, redirect them
         return redirect('no_access')
 
-    return render(request, 'recruit/ta_manager.html',{'candidates': candidates})
+    return render(request, 'recruit/ta_manager.html', {'candidates': candidates})
+
 
 @login_required
 def ta_members(request):
     # Get the TA member associated with the logged-in user
     try:
-        ta_member = TAMember.objects.get(user=request.user)
+        ta_member = TAMember.objects.get(name=request.user.username)
     except TAMember.DoesNotExist:
         return redirect('no_access')  # Redirect if user is not a TA member
 
     # Fetch candidates added by the logged-in TA member
+    candidates = Candidate.objects.filter(ta_member=ta_member)
     
-    candidates = Candidate.objects.filter(ta_member_id=ta_member)
     return render(request, 'recruit/ta_members.html', {'candidates': candidates})
+
 
 
 def logout_page(request):
@@ -201,26 +206,49 @@ def candidate_details(request, id):
 
 #     return render(request, 'recruit/add_candidate.html', {'form': form})
 
+from django.contrib.auth.decorators import login_required
 @login_required
 def add_candidate(request):
     try:
-        ta_member = TAMember.objects.get(user=request.user)
-    except TAMember.DoesNotExist:
-        return redirect('no_access')
+        # Check if the user is a TA member
+        ta_member = TAMember.objects.filter(name=request.user.username).first()
+        ta_manager = None
+
+        if not ta_member:
+            # If not a TA member, check if the user is a TA manager
+            ta_manager = TAManager.objects.filter(name=request.user.username).first()
+
+        if not ta_member and not ta_manager:
+            # If the user is neither a TA member nor a TA manager, redirect them
+            return redirect('common_page')
+
+    except Exception as e:
+        print(e)
+        return redirect('common_page')
 
     if request.method == 'POST':
         form = CandidateForm(request.POST, request.FILES)
         if form.is_valid():
             candidate = form.save(commit=False)
-            candidate.ta_member = ta_member  # Assign the logged-in TA member
-            candidate.save()
-            messages.success(request, "Candidate added successfully!")  # Optional success message
-            return redirect('ta_members')  # Redirect to the TA members page
 
+            # Set the TA member or TA manager who added the candidate
+            if ta_member:
+                candidate.ta_member = ta_member
+            elif ta_manager:
+                candidate.ta_member = None  # Or handle this association as needed
+
+            candidate.save()
+            messages.success(request, "Candidate added successfully!")
+            return redirect('ta_members' if ta_member else 'ta_managers')
+        else:
+            # Print form errors to debug
+            print(form.errors)
+            return HttpResponse(f"Form errors: {form.errors}")
     else:
         form = CandidateForm()
 
     return render(request, 'recruit/add_candidate.html', {'form': form})
+
 
 @login_required(login_url="/login/")
 def editCandidate(request, id):
@@ -276,30 +304,23 @@ def delete(request, id):
     messages.error(request, "Data Deleted Successfully")
     return redirect('ta_members')
 
-
 def common_page(request):
     queryset = Candidate.objects.prefetch_related('feedbacks').all()
     user = request.user
-    # if user.groups.filter(name='Team_poc').exists():
-    #     # Assuming user is related to a POC object, and POC is linked to a team
-    #     poc = POC.objects.filter(poc_name=user.username).first()
-    #     if poc:
-    #         team_id = poc.team.team_id
-    #         queryset = queryset.filter(team_id=team_id)
 
-    try:
-        interview = Interviewer.objects.get(user=request.user)
-    except Interviewer.DoesNotExist:
-        return redirect('no_access')  # Redirect if user is not a TA member
+    # # Assuming user is related to an Interviewer object, and we need to use interviewer_name
+    # try:
+    #     interview = Interviewer.objects.get(interviewer_name=request.user.username)
+    # except Interviewer.DoesNotExist:
+    #     return redirect('no_access')  # Redirect if user is not an Interviewer
 
-    # Fetch candidates added by the logged-in TA member
-    
-    candidates = Candidate.objects.filter(interviewer=interview)
+    # Fetch candidates associated with the logged-in Interviewer
+    # candidates = Candidate.objects.filter(interviewer=interview)
 
     if request.GET.get('search'):
         search = request.GET.get('search')
         if search.lower() == 'none':
-            queryset = queryset.filter(interviewer__isnull=True)        
+            queryset = queryset.filter(interviewer__isnull=True)
         else:
             queryset = queryset.filter(
                 Q(name__icontains=search) |
@@ -307,15 +328,15 @@ def common_page(request):
                 Q(id__icontains=search) |
                 Q(interviewer__interviewer_name__icontains=search)
             )
+
     context = {
         'is_interviewer': user.groups.filter(name='Team_interviewer').exists() if user.is_authenticated else False,
         'is_poc': user.groups.filter(name='Team_poc').exists() if user.is_authenticated else False,
         'is_employee': user.groups.filter(name='Employee').exists() if user.is_authenticated else False,
-        # 'is_team_manager' : user.groups.filter(name="Team_leads_managers").exists() if user.is_authenticated else False,
-        'queryset':queryset,
-        # 'candidates':candidates,
+        'queryset': queryset,
     }
     return render(request, 'recruit/common_page.html', context)
+
 
 
 

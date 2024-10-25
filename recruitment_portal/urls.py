@@ -19,7 +19,7 @@ urlpatterns = [
   path('team_manager_leads/',leads_managers,name='leads_managers'),
   path('ta_managers/',ta_managers,name='ta_managers'),
   path('ta_members/',ta_members,name='ta_members'),
-
+  path('add_ta_member/',add_ta_member, name='add_ta_member'),
 
 ]
 

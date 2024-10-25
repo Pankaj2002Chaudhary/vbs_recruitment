@@ -96,6 +96,19 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 @login_required
+def add_ta_member(request):
+    teams = TATeam.objects.all()
+    if request.method == 'POST':
+        name = request.POST['name']
+        team_id = request.POST['ta_team']
+        team = TATeam.objects.get(ta_team_id=team_id)
+        TAMember.objects.create(name=name,
+                                ta_team=team)
+        return redirect('ta_managers')  # Redirect to a success page
+
+    return render(request, 'recruit/add_ta_member.html', {'teams': teams})
+
+@login_required
 def ta_managers(request):
     try:
         # Get the TA Manager linked to the logged-in user

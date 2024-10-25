@@ -81,6 +81,98 @@
                 margin-top: 10px;
             }
         }
+        .carousel-container {
+      /* width: 100%; */
+      /* max-width: 800px; */
+      overflow: hidden;
+      position: relative;
+      /* border-radius: 10px; */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      transition: opacity 0.5s ease;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: auto;
+      /* border-radius: 10px; */
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .prev-btn {
+      left: 10px;
+    }
+
+    .next-btn {
+      right: 10px;
+    }
+
+    .carousel-btn:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .indicators {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .indicator {
+      width: 12px;
+      height: 12px;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .active {
+      background-color: white;
+    }
+    .quote {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .quote1 {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
     </style>
 </head>
 <body>
@@ -105,8 +197,72 @@
         </ul>
     </nav>
 
+    <div class="carousel-container">
+        <div class="carousel-track">
+          <div class="carousel-slide">
+            <img src="https://via.placeholder.com/800x400/00796b/ffffff?text=Image+1" alt="Image 1">
+            <div class="quote">"Believe you can and you're halfway there."</div>
+            <div class="quote1">"Let’s do something crazy, something we’ll never forget!"</div>
+
+
+          </div>
+          <div class="carousel-slide">
+            <img src="https://via.placeholder.com/800x400/004d40/ffffff?text=Image+2" alt="Image 2">
+          </div>
+          <div class="carousel-slide">
+            <img src="https://via.placeholder.com/800x400/00897b/ffffff?text=Image+3" alt="Image 3">
+          </div>
+          <div class="carousel-slide">
+            <img src="https://via.placeholder.com/800x400/26a69a/ffffff?text=Image+4" alt="Image 4">
+          </div>
+        </div>
+    
+        <button class="carousel-btn prev-btn">&#10094;</button>
+        <button class="carousel-btn next-btn">&#10095;</button>
+    
+        <div class="indicators">
+          <span class="indicator active" data-slide="0"></span>
+          <span class="indicator" data-slide="1"></span>
+          <span class="indicator" data-slide="2"></span>
+          <span class="indicator" data-slide="3"></span>
+        </div>
+      </div>
+    
+      <script>
+        const track = document.querySelector('.carousel-track');
+        const slides = Array.from(track.children);
+        const nextButton = document.querySelector('.next-btn');
+        const prevButton = document.querySelector('.prev-btn');
+        const indicators = document.querySelectorAll('.indicator');
+    
+        let currentIndex = 0;
+    
+        function updateCarousel(index) {
+          track.style.transform = `translateX(-${index * 100}%)`;
+          indicators.forEach((indicator, i) => {
+            indicator.classList.toggle('active', i === index);
+          });
+        }
+    
+        nextButton.addEventListener('click', () => {
+          currentIndex = (currentIndex + 1) % slides.length;
+          updateCarousel(currentIndex);
+        });
+    
+        prevButton.addEventListener('click', () => {
+          currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+          updateCarousel(currentIndex);
+        });
+    
+        indicators.forEach(indicator => {
+          indicator.addEventListener('click', () => {
+            currentIndex = parseInt(indicator.getAttribute('data-slide'));
+            updateCarousel(currentIndex);
+          });
+        });
+
     <!-- JavaScript for Clock -->
-    <script>
+
         function updateClock() {
             const now = new Date();
             const hours = now.getHours().toString().padStart(2, '0');

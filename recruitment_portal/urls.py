@@ -2,8 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from recruitment_portal.views import *
 from . import views
-
-
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
   path('api/candidate-input',CandidateFormListCreate.as_view(),name='candidate-input'),
@@ -20,6 +19,10 @@ urlpatterns = [
   path('ta_managers/',ta_managers,name='ta_managers'),
   path('ta_members/',ta_members,name='ta_members'),
   path('add_ta_member/',add_ta_member, name='add_ta_member'),
+  path('password_reset/', auth_views.PasswordResetView.as_view(template_name='password_reset.html'), name='password_reset'),
+  path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
+  path('password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm'),
+  path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
 
 ]
 

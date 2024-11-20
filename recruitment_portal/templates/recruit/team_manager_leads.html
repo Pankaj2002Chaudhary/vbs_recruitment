@@ -1,6 +1,137 @@
-{% extends "base.html" %}
-{% block start %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertical Sidebar with Top Navbar</title>
+  <style>
+    /* Reset styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<h1> This is manager page. </h1>
+    /* Top Navbar */
+    .navbar {
+      height: 60px;
+      background: linear-gradient(to right, #0072b1, #1abc9c); /* Blue to green gradient */
+      color: #ffffff; /* Light text color */
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+    }
 
-{% endblock %}
+    /* Navbar logo and username */
+    .navbar img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .navbar p {
+      font-size: 18px;
+      margin-left: auto;
+    }
+
+    .navbar hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.5); /* Transparent white */
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      height: 100vh;
+      width: 200px;
+      background-color: #ffffff; /* Clean white */
+      position: fixed;
+      top: 60px;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      padding-top: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+
+    /* Sidebar buttons */
+    .sidebar button {
+      background-color: #f9f9f9; /* Light background */
+      color: #0072b1; /* Blue text */
+      border: none;
+      padding: 15px 20px;
+      text-align: left;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 5px;
+      transition: all 0.3s ease;
+      box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+      text-decoration: none;
+    }
+
+    /* Button hover effect */
+    .sidebar button:hover {
+      background-color: #0072b1; /* Blue hover */
+      color: #ffffff; /* White text */
+    }
+
+    /* Main Content Area */
+    .content {
+      margin-top: 60px;
+      margin-left: 200px;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: #333333; /* Dark text for readability */
+    }
+
+    /* Styled horizontal line */
+    .content hr {
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, #1abc9c, #0072b1); /* Gradient line */
+      margin: 20px 0;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <div class="navbar">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2QmZUlZ4IdbKTQ0tBkx1szN2ES2US1QkwqQ&s" alt="Logo">
+    <p>Welcome, {{ user.username }}</p>
+  </div>
+
+  <!-- Vertical Sidebar -->
+  <div class="sidebar">
+    <button onclick="performAction('View Candidates')"><a href="{% url 'common_page' %}">View Candidates</a></button>
+    <button onclick="performAction('Add Employee')">Add Employee</button>
+    <button onclick="performAction('Add POC')">Add POC</button>
+    <button onclick="performAction('Add Interviewer')">Add Interviewer</button>
+    <button onclick="performAction('Logout')"><a href="{% url 'logout' %}">Logout</a></button>
+  
+  
+
+  <!-- Main Content Area -->
+  <div class="content">
+    
+  </div>
+
+  <!-- Footer -->
+  
+
+</body>
+</html>

@@ -11,6 +11,28 @@ from .forms import CandidateForm, FeedbackForm  # Ensure you're importing your f
 from rest_framework import generics
 from .serializers import CandidateFormSerializer
 from django.http import HttpResponse  # For debugging purposes
+from django.core.mail import send_mail
+from django.shortcuts import render
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.models import User
+
+def custom_password_reset_view(request):
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            # Here you send the email to the entered email address
+            send_mail(
+                'Password Reset Request',
+                'Here is the link to reset your password: [URL]',
+                'sandysaluja7@gmail.com',  # Sender email
+                [email],  # Recipient email
+                fail_silently=False,
+            )
+            return render(request, 'password_reset_done.html')
+    else:
+        form = PasswordResetForm()
+    return render(request, 'password_reset.html', {'form': form})
 
 
 # Create your views here.

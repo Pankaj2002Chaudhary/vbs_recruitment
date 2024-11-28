@@ -49,7 +49,7 @@ class Interviewer(models.Model):
 class POC(models.Model):
     poc_id = models.AutoField(primary_key=True)  # Auto-increment primary key
     poc_name = models.CharField(max_length=255)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)  # FK to Team
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True, blank=True)  # FK to Team
 
     def __str__(self):
         return self.poc_name

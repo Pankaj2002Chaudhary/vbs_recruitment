@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Member</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .form-container h1 {
+            text-align: center;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-container input,
+        .form-container select,
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-container button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Register Member</h1>
+        <p><strong>Team:</strong> {{ team }}</p>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="id_username">Username:</label>
+            <input type="text" id="id_username" name="username" maxlength="150" required>
+            
+            <label for="id_password">Password:</label>
+            <input type="password" id="id_password" name="password" required>
+            
+            <label for="id_role">Role:</label>
+            <select id="id_role" name="role" required>
+                <option value="" disabled selected>Select a role</option>
+                <option value="ta_member">Talent Acquisition</option>
+            </select>
+            
+            <label for="id_name">Name:</label>
+            <input type="text" id="id_name" name="name" maxlength="255" required>
+            
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>

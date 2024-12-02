@@ -37,3 +37,15 @@ class RegistrationForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput, required=True)
     role = forms.ChoiceField(choices=ROLE_CHOICES, required=True)
     name = forms.CharField(max_length=255, required=True)
+
+class TARegistrationForm(forms.Form):
+    TA_ROLE_CHOICES = [
+        ('ta_member', 'ta_member'),
+                ('poc', 'POC'),
+
+    ]
+
+    username = forms.CharField(max_length=150, required=True)
+    password = forms.CharField(widget=forms.PasswordInput, required=True)
+    role = forms.ChoiceField(choices=TA_ROLE_CHOICES, required=True)
+    name = forms.CharField(max_length=255, required=True)

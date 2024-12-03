@@ -15,7 +15,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import User
-
+from .forms import *
 def custom_password_reset_view(request):
     if request.method == 'POST':
         form = PasswordResetForm(request.POST)
@@ -422,13 +422,90 @@ def register_member(request):
     return render(request, 'recruit/register_member.html', {'form': form, 'team': team})
 
 
+# from .forms import TARegistrationForm
+# def register_ta_member(request):
+#     # Retrieve the manager's team based on the logged-in user's name or identifier
+#         # Assuming the manager's name matches the logged-in user's username
+#     manager = TAManager.objects.get(name=request.user.username)
+#     team = manager.ta_team
+#     print(team)
+
+#     if request.method == 'POST':
+#         form = TARegistrationForm(request.POST)
+#         if form.is_valid():
+#             print("ok")
+#             username = form.cleaned_data['username']
+#             password = form.cleaned_data['password']
+#             role = form.cleaned_data['role']
+#             name = form.cleaned_data['name']
+
+#             # Create the User object
+#             user = User.objects.create_user(username=username, password=password)
+#             user.save()
+
+#             # Assign the user to a group based on their role
+#             group_name = None
+#             if role == 'ta_member':
+#                 TAMember.objects.create(name=name, ta_team=team)
+#                 group_name = 'TA_member'
+
+#             if group_name:
+#                 group, created = Group.objects.get_or_create(name=group_name)
+#                 user.groups.add(group)  # Assign the user to the group
+#                 user.save()
+
+#             messages.success(request, f'{role.capitalize()} registered successfully with username: {username}')
+#             return redirect('ta_managers')
+
+#     else:
+#         form = TARegistrationForm()
+
+#     return render(request, 'recruit/register_ta_member.html', {'form': form, 'team': team})
 
 
 
 
 
+def register_ta_member(request):
+    # try:
+        # Retrieve the manager's team based on the logged-in user
+    manager = TAManager.objects.get(name=request.user.username)
+    team = manager.ta_team
+    # except TAManager.DoesNotExist:
+    #     messages.error(request, "You are not authorized to register TA members.")
+    #     return redirect('some_error_page')
 
+    if request.method == 'POST':
+        form = TARegistrationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            role = form.cleaned_data['role']
+            name = form.cleaned_data['name']
 
+            # Create the User object
+            user = User.objects.create_user(username=username, password=password)
+            
+            # Assign the user to a group based on their role
+            if role == 'ta_member':
+                TAMember.objects.create(name=name, ta_team=team)
+                group, created = Group.objects.get_or_create(name='TA_member')
+                user.groups.add(group)  # Assign the user to the group
+                user.save()
+            else:
+                messages.error(request, "Invalid role selected.")
+                return redirect('ta_managers')
+
+            messages.success(request, f'{role.capitalize()} registered successfully with username: {username}')
+            return redirect('ta_managers')
+        else:
+            # Display form errors
+            messages.error(request, form.errors)
+
+    else:
+        form = TARegistrationForm()
+
+    return render(request, 'recruit/register_ta_member.html', {'form': form, 'team': team})
 
 
 

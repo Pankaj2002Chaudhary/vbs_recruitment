@@ -162,9 +162,14 @@ def ta_members(request):
         return redirect('no_access')  # Redirect if user is not a TA member
 
     # Fetch candidates added by the logged-in TA member
-    candidates = Candidate.objects.filter(ta_member=ta_member)
+    # candidates = Candidate.objects.filter(ta_member=ta_member)
+    context = {
+        'candidates' : Candidate.objects.filter(ta_member=ta_member),
+        'ta_members': request.user.groups.filter(name="TA_member").exists(),
+    }
+    return render(request, 'recruit/ta_members.html', context)
     
-    return render(request, 'recruit/ta_members.html', {'candidates': candidates})
+    # return render(request, 'recruit/ta_members.html', {'candidates': candidates})
 
 
 
@@ -282,7 +287,7 @@ def editCandidate(request, id):
         email = request.POST.get('email')
         phone = request.POST.get('phone')
         registerdate = request.POST.get('registerdate')
-        interviewer = request.POST.get('interviewer')
+        # interviewer = request.POST.get('interviewer')
         resume = request.FILES.get('resume')  # None if no file is uploaded
         experience = request.POST.get('experience')
         address = request.POST.get('address')
@@ -294,7 +299,7 @@ def editCandidate(request, id):
         d.email = email
         d.phone = phone
         d.registerdate = registerdate
-        d.interviewer = interviewer
+        # d.interviewer = interviewer
         d.experience = experience
         d.address = address
         d.tech_stack = tech_stack
@@ -307,7 +312,7 @@ def editCandidate(request, id):
         d.save()
 
         messages.success(request, "Candidate details updated successfully!")
-        return redirect('common_page')
+        return redirect('ta_members')
 
     # Render the form with existing candidate and feedback data
     context = {
@@ -345,8 +350,8 @@ def common_page(request):
             queryset = queryset.filter(
                 Q(name__icontains=search) |
                 Q(email__icontains=search) |
-                Q(id__icontains=search) |
-                Q(interviewer__interviewer_name__icontains=search)
+                Q(id__icontains=search) 
+                # Q(interviewer__interviewer_name__icontains=search)
             )
 
     context = {
@@ -354,6 +359,7 @@ def common_page(request):
         'is_poc': user.groups.filter(name='Team_poc').exists() if user.is_authenticated else False,
         'is_employee': user.groups.filter(name='Employee').exists() if user.is_authenticated else False,
         'queryset': queryset,
+        'is_tamember': request.user.groups.filter(name="TA_member").exists(),
     }
     return render(request, 'recruit/common_page.html', context)
 
@@ -366,7 +372,7 @@ class CandidateFormListCreate(generics.ListCreateAPIView):
 
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Team, Employee, POC, Interviewer
+from .models import Team, Employee, POC, Interviewer, Manager
 from .forms import RegistrationForm
 from django.contrib.auth.models import Group
 
@@ -374,6 +380,7 @@ def register_member(request):
     # Retrieve the manager's team based on the logged-in user's name or identifier
         # Assuming the manager's name matches the logged-in user's username
     manager = Manager.objects.get(manager_name=request.user.username)
+    print(manager)
     team = manager.team
     print(team)
 

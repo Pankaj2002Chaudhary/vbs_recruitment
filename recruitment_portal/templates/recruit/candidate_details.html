@@ -109,9 +109,9 @@
         <div class="section">
             <span class="label">Email:</span> {{ candidate.email }}
         </div>
-        <div class="section">
-            <span class="label">Interviewer LDAP:</span> {{ candidate.interviewer }}
-        </div>
+        {% comment %} <div class="section">
+            <span class="label">Interviewer:</span> {{ candidate.interviewer }}
+        </div> {% endcomment %}
         <div class="section">
             <span class="label">Register date:</span> {{ candidate.registerdate }}
         </div>

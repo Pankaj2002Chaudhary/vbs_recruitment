@@ -1,0 +1,55 @@
+<!-- add_interviewer.html -->
+{% extends "base.html" %}
+{% block start %}
+<h2>Add Interviewer for {{ candidate.name }}</h2>
+
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add Interviewer</button>
+</form>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+{% comment %} <form method="post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form> {% endcomment %}
+
+
+{% comment %} <h2>Add Interviewer for {{ Interviewer.name }}</h2>
+
+<form method="post" action="">
+    {% csrf_token %}
+    
+    {{ form.as_p }}  <!-- This will display all fields except the hidden 'candidate' field -->
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %} {% endcomment %}
+
+{% comment %} <form method="POST">
+    {% csrf_token %}
+    <label for="id_name">Name</label>
+    {{ form.name }}  <!-- Render the name input field -->
+    
+    <button type="submit">Add Interviewer</button>
+</form> {% endcomment %}
+
+
+{% comment %} <form method="post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- This will display all fields except the hidden 'candidate' field -->
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form> {% endcomment %}

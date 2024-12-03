@@ -95,6 +95,7 @@ class Candidate(models.Model):
     experience = models.TextField()
     address = models.TextField()  # Candidate's address
     tech_stack = models.TextField()  # Technology stack
+    team=models.ForeignKey('Team', on_delete=models.CASCADE,null=True,blank=True)
 
     def __str__(self):
         return self.name

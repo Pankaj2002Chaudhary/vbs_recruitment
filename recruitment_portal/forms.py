@@ -5,7 +5,13 @@ from .models import *
 class CandidateForm(forms.ModelForm):
     class Meta:
         model = Candidate
-        fields=['name', 'age','email','phone','registerdate','interviewer','experience','address','tech_stack', 'resume']
+        fields=['name', 'age','email','phone','registerdate','experience','address','tech_stack', 'resume']
+
+
+class InterviewerForm(forms.ModelForm):
+    class Meta:
+        model = Candidate
+        fields = ['name']  # Only include the 'interviewer' field
         
 
 class FeedbackForm(forms.ModelForm):

@@ -14,14 +14,17 @@
             <th scope="col">Id</th>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
-            <th scope="col">Interviewer</th>
+            {% comment %} <th scope="col">Interviewer</th> {% endcomment %}
             <th scope="col">Resume</th>
             <th scope="col">Feedback</th>
-            {% if is_poc %}
+            {% if is_tamember %}
             <th scope="col">Delete/Modify</th>
             {% endif %}
             {% if is_interviewer %}
             <th scope="col">Add Feedback</th>
+            {% endif %}
+            {% if is_poc %}
+            <th scope="col">Add Interview</th>
             {% endif %}
         </tr>
     </thead>
@@ -30,8 +33,9 @@
         <tr>
             <th scope="row">{{ forloop.counter }}</th>
             <td><a href="{% url 'details' i.id %}" class="namecol">{{ i.name }}</a></td>
+            {% comment %} <td><a href="{% url 'candidate_details' i.id %}" class="namecol">{{ i.name }}</a></td> {% endcomment %}
             <td>{{ i.email }}</td>
-            <td>none</td>
+            {% comment %} <td>none</td> {% endcomment %}
             <td>
                 {% if i.resume %}
                     <!-- Preview Button -->
@@ -57,7 +61,7 @@
                     No Feedback Available
                 {% endif %}
             </td>
-            {% if is_poc %}
+            {% if is_tamember %}
             <td>
                 <a href="{% url 'editCandidate' i.id %}" class="btn btn-outline-primary btn-sm">Edit</a>
                 <form method="POST" action="{% url 'delete' i.id %}" style="display:inline;">
@@ -66,6 +70,18 @@
                 </form>
             </td>
             {% endif %}
+            {% if is_poc %}
++            <td>
++                <a href="{% url 'add_interviewer' i.id %}" class="btn btn-outline-primary btn-sm">Add Intervie
+wer</a>
++                {% comment %} <a href="{% url 'add_interviewer' i.id %}" class="btn btn-outline-primary btn-sm
+">Add Interviewer</a> {% endcomment %}
++                {% comment %} <a href="{% url 'add_interviewer' i.id %}" class="btn btn-outline-primary btn-sm
+">Add Interviewer</a> {% endcomment %}
++            </td>
++            <td>{{ i.interviewer }}</td>
++            {% endif %}
+ 
             {% if is_interviewer %}
             <td>
                 <a href="{% url 'add_feedback' i.id %}" class="btn btn-outline-primary btn-sm">Add Feedback</a>

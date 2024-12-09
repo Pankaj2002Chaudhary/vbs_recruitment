@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruitment Portal</title>
+    <style>
+.popup {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: none;  /* Initially hidden */
+    animation: fadeIn 1s;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.top {
+    text-align: center; /* Centers horizontally */
+    height: 100%;      /* Full height */
+}
+
+.centered-image {
+    max-width: 100%; /* Responsive */
+    height: 60px;    /* Maintain aspect ratio */
+    display: block;  /* Necessary for margin auto to work */
+    margin: auto;    /* Center image */
+}
+
+.navbar {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 900px;
+}
+
+.navbar-items {
+    display: flex;
+}
+
+.navbar-items a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    transition: background 0.3s;
+    padding-left: 30px;
+}
+
+.navbar-items a:hover {
+    background-color: #555;
+}
+
+.search-container {
+    display: flex;
+}
+
+.search-box {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    width: 200px;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+p{
+    margin-left: 90%;
+}
+
+
+</style>
+</head>
+<body>
+    <header>
+       
+        <div class="top"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2QmZUlZ4IdbKTQ0tBkx1szN2ES2US1QkwqQ&s" class="centered-image"><p>{{ user.username }}</p></div>
+
+        <nav class="navbar">
+                <div class="navbar-items">
+                    <form>
+                    <div class="search-container">
+                        <input type="search" placeholder="Search..." class="search-box" name="search">
+                        <button class="search-button" type="submit">search</button>
+                    </div>
+                    </form>
+                    <div class="navbar-container"></div>
+                    <a href="{% url 'poc' %}">Home</a>
+                    {% if request.user.is_authenticated %}
+                      {% if ta_members %}
+                        <a href="{% url 'add_candidate' %}">Add Candidate</a>
+                      {% endif %}
+                      <a href="{% url 'logout' %}">Logout</a>
+                      {% else %}
+                        <a href="{% url 'login' %}">Login</a>
+                      {% endif %}
+
+                </div>
+               
+            </div>
+        </nav>
+        <!-- Pop-up Message -->
+        {% if messages %}
+        {% for message in messages %}
+        {%if message.tags == 'success' %}
+        <div id="popup" class="popup">
+            <span>{{ message }}</span>
+        </div>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+    </header>
+     {% block start %}
+       
+
+<!-- Bootstrap 5.3.3 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<table class="table table-bordered">
+    <thead>
+        <tr class="table-active">
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            {% comment %} <th scope="col">Interviewer</th> {% endcomment %}
+            <th scope="col">Resume</th>
+            <th scope="col">Feedback</th>
+            <th scope="col">Add Interviewer</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in candidates %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td><a href="{% url 'details' i.id %}" class="namecol">{{ i.name }}</a></td>
+            <td>{{ i.email }}</td>
+            {% comment %} <td>none</td> {% endcomment %}
+            <td>
+                {% if i.resume %}
+                    <!-- Preview Button -->
+                    <a href="{{ i.resume.url }}" class="btn btn-outline-info btn-sm me-2" target="_blank">
+                        <i class="bi bi-eye"></i> Preview
+                    </a>
+
+                    <!-- Download Button -->
+                    <a href="{{ i.resume.url }}" download class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                {% else %}
+                    No Resume Uploaded
+                {% endif %}
+            </td>
+            <td>
+                {% if i.feedbacks.exists %}
+                    <!-- Show the latest feedback -->
+                    <strong>{{ i.feedbacks.last.status }}:</strong> {{ i.feedbacks.last.feedback }}
+                    <br>
+                    <small><em>by {{ i.feedbacks.last.interviewer }} on {{ i.feedbacks.last.created_at|date:"d M Y" }}</em></small>
+                {% else %}
+                    No Feedback Available
+                {% endif %}
+            </td>
+            <td>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addInterviewerModal" data-candidate-id="{{ i.id }}">
+                    Add Interviewer
+                  </button>
+            </td>
+           
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+ <!-- Modal for Adding Interviewer -->
+ <div class="modal fade" id="addInterviewerModal" tabindex="-1" aria-labelledby="addInterviewerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="post" action="{% url 'poc' %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="addInterviewerModalLabel">Add Interviewer</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="candidate_id" id="candidateId" value="">
+            <div class="mb-3">
+              <label for="interviewerSelect" class="form-label">Select Interviewer</label>
+              <select class="form-select" id="interviewerSelect" name="interviewer_id" required>
+                <option value="" disabled selected>--Select Interviewer--</option>
+                {% for interviewer in interviewers %}
+                <option value="{{ interviewer.interviewer_id }}">{{ interviewer.interviewer_name }}</option>
+                {% endfor %}
+            </select>
+            
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Interviewer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+<!-- Bootstrap Icons for Preview and Download -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+     {% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var popup = document.getElementById('popup');
+            if (popup) {
+                popup.style.display = 'block';  // Show the pop-up
+                setTimeout(function() {
+                    popup.style.display = 'none';  // Hide after 10 seconds
+                }, 5000);  // 10 seconds in milliseconds
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+  var addInterviewerModal = document.getElementById('addInterviewerModal');
+  addInterviewerModal.addEventListener('show.bs.modal', function(event) {
+    var button = event.relatedTarget; // Button that triggered the modal
+    var candidateId = button.getAttribute('data-candidate-id');
+    var candidateIdInput = addInterviewerModal.querySelector('#candidateId');
+    candidateIdInput.value = candidateId;
+  });
+});
+    </script>
+</body>
+</html>

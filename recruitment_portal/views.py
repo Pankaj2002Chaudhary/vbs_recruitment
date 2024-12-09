@@ -102,7 +102,7 @@ def login_page(request):
                 return redirect('common_page')
             
             elif user.groups.filter(name='Team_poc').exists():
-                return redirect('common_page')
+                return redirect('poc')
             
             else:
                 return redirect('login')  # Default redirect if no group matches
@@ -341,7 +341,6 @@ def common_page(request):
 
     # Fetch candidates associated with the logged-in Interviewer
     # candidates = Candidate.objects.filter(interviewer=interview)
-
     if request.GET.get('search'):
         search = request.GET.get('search')
         if search.lower() == 'none':
@@ -508,8 +507,74 @@ def register_ta_member(request):
     return render(request, 'recruit/register_ta_member.html', {'form': form, 'team': team})
 
 
+# @login_required
+# def poc(request):
+#     # Get the TA member associated with the logged-in user
+#     try:
+#         poc = POC.objects.get(poc_name=request.user.username)
+#     except POC.DoesNotExist:
+#         return redirect('no_access')  # Redirect if user is not a TA member
+#     team = poc.team
+#     candidates = Candidate.objects.filter(team=team)
+#     interviewers = Interviewer.objects.filter(team=team)
 
+#     context = {
+#         'candidates': candidates,
+#         'interviewers': interviewers,
+#     }
+#     return render(request, 'recruit/poc.html', context)
 
+# @login_required
+# def add_interviewer(request):
+#     if request.method == 'POST':
+#         candidate_id = request.POST.get('candidate_id')
+#         interviewer_id = request.POST.get('interviewer_id')
+
+#         try:
+#             candidate = Candidate.objects.get(id=candidate_id)
+#             interviewer = Interviewer.objects.get(interviewer_id=interviewer_id)
+#             candidate.interviewer = interviewer
+#             candidate.save()
+#             messages.success(request, 'Interviewer added successfully.')
+#         except (Candidate.DoesNotExist, Interviewer.DoesNotExist):
+#             messages.error(request, 'Invalid candidate or interviewer.')
+
+#     return redirect(request,'recruit/poc.html')
+
+from .models import POC, Candidate, Interviewer
+
+@login_required
+def poc(request):
+    # Fetch the POC associated with the logged-in user
+    try:
+        poc = POC.objects.get(poc_name=request.user.username)
+    except POC.DoesNotExist:
+        return redirect('no_access')  # Redirect if user is not a POC
+    
+    # Get the team and related data
+    team = poc.team
+    candidates = Candidate.objects.filter(team=team)
+    interviewers = Interviewer.objects.filter(team=team)
+
+    if request.method == 'POST':
+        # Handle form submission to assign an interviewer
+        candidate_id = request.POST.get('candidate_id')
+        interviewer_id = request.POST.get('interviewer_id')
+
+        try:
+            candidate = Candidate.objects.get(id=candidate_id)
+            interviewer = Interviewer.objects.get(interviewer_id=interviewer_id)
+            candidate.interviewer = interviewer
+            candidate.save()
+            messages.success(request, 'Interviewer assigned successfully.')
+        except (Candidate.DoesNotExist, Interviewer.DoesNotExist):
+            messages.error(request, 'Invalid candidate or interviewer.')
+
+    context = {
+        'candidates': candidates,
+        'interviewers': interviewers,
+    }
+    return render(request, 'recruit/poc.html', context)
 
 
 

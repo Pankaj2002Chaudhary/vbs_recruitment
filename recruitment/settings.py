@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-5xy_w@(%ch85gfs$=(u7hl6zk)v*z&ztz=+l1p)&l-8ragvi76
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1',]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -41,8 +41,18 @@ INSTALLED_APPS = [
     'recruitment_portal',
     'rest_framework',
     'rest_framework_simplejwt',
+    "corsheaders",
+    'rest_framework_simplejwt.token_blacklist',  # Add this if you want token blacklisting support
+
+
 
 ]
+# settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -62,6 +72,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    'django.middleware.common.CommonMiddleware',
+
+]
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React development server
 ]
 
 ROOT_URLCONF = 'recruitment.urls'
@@ -84,6 +103,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'recruitment.wsgi.application'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',  # for session-based auth
+        # 'rest_framework.authentication.TokenAuthentication',  # if using token-based auth
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Ensures only authenticated users can access
+    ],
+}
 
 
 # Database

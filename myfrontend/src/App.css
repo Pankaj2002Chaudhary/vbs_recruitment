@@ -1,0 +1,212 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: #f4f7fc; /* Light background */
+  font-family: 'Arial', sans-serif;
+  /* overflow: hidden; Prevent scrolling */
+}
+
+/* Fullscreen container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full height */
+  width: 100vw;  /* Full width */
+  justify-content: flex-start;
+}
+
+.navbar {
+  background-color: #4CAF50;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Full width */
+  height: 80px;
+}
+
+
+.navbar-logo img {
+  height: 50px;
+  /* border-radius: 50%; */
+}
+
+.navbar-buttons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.navbar-button {
+  background-color: #fff;
+  color: #4CAF50;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.navbar-button:hover {
+  background-color: #45a049;
+  color: white;
+}
+
+/* Content Area */
+.content-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 20px;
+  text-align: center;
+  height: 100%; /* Fill remaining space */
+}
+
+/* Landing Page Header */
+.landing-header {
+  background-color: #fff;
+  padding: 50px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.landing-header h1 {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.landing-header p {
+  font-size: 18px;
+  color: #666;
+}
+
+/* Full-screen Login Form */
+.login-form-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);  /* Dark background overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #4CAF50;
+}
+
+.login-form input {
+  padding: 12px;
+  margin-bottom: 20px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.login-form button {
+  padding: 12px 25px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.login-form button:hover {
+  background-color: #45a049;
+}
+
+/* Timesheet Form Styles */
+.timesheet-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 150px; /* Ensure form starts below the navbar */
+}
+
+.timesheet-container h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.timesheet-form input,
+.timesheet-form textarea,
+.timesheet-form select,
+.timesheet-form button {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.timesheet-form input,
+.timesheet-form select,
+.timesheet-form textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.timesheet-form input:focus,
+.timesheet-form select:focus,
+.timesheet-form textarea:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.timesheet-form button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 25px;
+  font-size: 16px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.timesheet-form button:hover {
+  background-color: #45a049;
+}

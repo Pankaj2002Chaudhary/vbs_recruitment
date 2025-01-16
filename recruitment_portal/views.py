@@ -7,9 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import *
-from .forms import CandidateForm, FeedbackForm  # Ensure you're importing your form
 from rest_framework import generics
-from .serializers import CandidateFormSerializer
 from django.http import HttpResponse  # For debugging purposes
 from django.core.mail import send_mail
 from django.shortcuts import render
@@ -63,20 +61,6 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 
 
-def landing_page(request):
-    active_url = None
-    
-    if request.user.is_authenticated:
-        if request.user.groups.filter(name='TA_member').exists():
-            active_url = reverse('ta_members')  # URL name for TAMembers
-        elif request.user.groups.filter(name='TA_Manager').exists():
-            active_url = reverse('ta_managers')  # URL name for Managers
-        elif request.user.groups.filter(name='Team_leads_managers').exists():
-            active_url = reverse('leads_managers')  # URL name for Interviewers
-        # Add other conditions as needed for Employee, POC, etc.
-    if isinstance(active_url, HttpResponseRedirect):
-        active_url = active_url.url
-    return render(request, 'recruit/landing_page.html', {'active_url': active_url})
 
 def login_page(request):
     if request.method == "POST":
@@ -118,58 +102,11 @@ def leads_managers(request):
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
-@login_required
-def add_ta_member(request):
-    teams = TATeam.objects.all()
-    if request.method == 'POST':
-        name = request.POST['name']
-        team_id = request.POST['ta_team']
-        team = TATeam.objects.get(ta_team_id=team_id)
-        TAMember.objects.create(name=name,
-                                ta_team=team)
-        return redirect('ta_managers')  # Redirect to a success page
-
-    return render(request, 'recruit/add_ta_member.html', {'teams': teams})
-
-@login_required
-def ta_managers(request):
-    try:
-        # Get the TA Manager linked to the logged-in user
-        ta_manager = TAManager.objects.get(name=request.user.username)
-
-        # Get the TA team of this manager
-        ta_team = ta_manager.ta_team
-
-        # Get all members belonging to this TA team
-        ta_members = TAMember.objects.filter(ta_team=ta_team)
-
-        # Get candidates added by members of this TA team
-        candidates = Candidate.objects.filter(ta_member__in=ta_members)
-
-    except TAManager.DoesNotExist:
-        # If the logged-in user is not a TA Manager, redirect them
-        return redirect('no_access')
-
-    return render(request, 'recruit/ta_manager.html', {'candidates': candidates})
 
 
-@login_required
-def ta_members(request):
-    # Get the TA member associated with the logged-in user
-    try:
-        ta_member = TAMember.objects.get(name=request.user.username)
-    except TAMember.DoesNotExist:
-        return redirect('no_access')  # Redirect if user is not a TA member
 
-    # Fetch candidates added by the logged-in TA member
-    # candidates = Candidate.objects.filter(ta_member=ta_member)
-    context = {
-        'candidates' : Candidate.objects.filter(ta_member=ta_member),
-        'ta_members': request.user.groups.filter(name="TA_member").exists(),
-    }
-    return render(request, 'recruit/ta_members.html', context)
-    
-    # return render(request, 'recruit/ta_members.html', {'candidates': candidates})
+
+
 
 
 
@@ -186,50 +123,9 @@ def logout_page(request):
 #     }
 #     return render(request, "recruit/candidate_details.html", context)
 
-def add_feedback(request,id):
-    candidate = get_object_or_404(Candidate, id=id)
-    feedbacks = candidate.feedbacks.all()  # Fetch all feedback related to this candidate
 
-    # Handle feedback form submission
-    if request.method == 'POST':
-        feedback_form = FeedbackForm(request.POST)
-        if feedback_form.is_valid():
-            feedback = feedback_form.save(commit=False)
-            feedback.candidate = candidate  # Associate the feedback with the candidate
-            feedback.save()
-            messages.success(request, "Feedback added successfully!")
-            return redirect('common_page')
-    else:
-        feedback_form = FeedbackForm()
 
-    context = {
-        'feedbacks': feedbacks,
-        'feedback_form': feedback_form,
-    }
-    return render(request, "recruit/add_feedback.html", context)
 
-def candidate_details(request, id):
-    candidate = get_object_or_404(Candidate, id=id)
-    feedbacks = candidate.feedbacks.all()  # Fetch all feedback related to this candidate
-
-    # Handle feedback form submission
-    if request.method == 'POST':
-        feedback_form = FeedbackForm(request.POST)
-        if feedback_form.is_valid():
-            feedback = feedback_form.save(commit=False)
-            feedback.candidate = candidate  # Associate the feedback with the candidate
-            feedback.save()
-            messages.success(request, "Feedback added successfully!")
-            return redirect('details', id=id)
-    else:
-        feedback_form = FeedbackForm()
-
-    context = {
-        'candidate': candidate,
-        'feedbacks': feedbacks,
-        'feedback_form': feedback_form,
-    }
-    return render(request, "recruit/candidate_details.html", context)
 
 # def add_candidate(request):
 #     if request.method == 'POST':
@@ -247,91 +143,17 @@ def candidate_details(request, id):
 
 #     return render(request, 'recruit/add_candidate.html', {'form': form})
 
-from django.contrib.auth.decorators import login_required
-@login_required
-def add_candidate(request):
-    try:
-        # Check if the user is a TA member
-        ta_member = TAMember.objects.filter(name=request.user.username).first()
-    except Exception as e:
-        print(e)
-        return redirect('common_page')
-
-    if request.method == 'POST':
-        form = CandidateForm(request.POST, request.FILES)
-        if form.is_valid():
-            candidate = form.save(commit=False)
-            candidate.ta_member = ta_member
-            candidate.save()
-            messages.success(request, "Candidate added successfully!")
-            return redirect('ta_members' if ta_member else 'ta_managers')
-        else:
-            # Print form errors to debug
-            print(form.errors)
-            return HttpResponse(f"Form errors: {form.errors}")
-    else:
-        form = CandidateForm()
-
-    return render(request, 'recruit/add_candidate.html', {'form': form})
-
-
-@login_required(login_url="/login/")
-def editCandidate(request, id):
-    d = get_object_or_404(Candidate, id=id)  # Fetch the candidate object by ID
-    feedback = Feedback.objects.filter(candidate=d).last()  # Get the latest feedback for the candidate (or adjust to get the required feedback)
-
-    if request.method == "POST":
-        # Retrieve the form data for candidate
-        name = request.POST.get('name')
-        age = request.POST.get('age')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        registerdate = request.POST.get('registerdate')
-        # interviewer = request.POST.get('interviewer')
-        resume = request.FILES.get('resume')  # None if no file is uploaded
-        experience = request.POST.get('experience')
-        address = request.POST.get('address')
-        tech_stack = request.POST.get('tech_stack')
-
-        # Update the candidate object
-        d.name = name
-        d.age = age
-        d.email = email
-        d.phone = phone
-        d.registerdate = registerdate
-        # d.interviewer = interviewer
-        d.experience = experience
-        d.address = address
-        d.tech_stack = tech_stack
-
-        # Update the resume only if a new one is uploaded
-        if resume:
-            d.resume = resume
-
-        # Save the updated candidate object
-        d.save()
-
-        messages.success(request, "Candidate details updated successfully!")
-        return redirect('ta_members')
-
-    # Render the form with existing candidate and feedback data
-    context = {
-        "d": d,
-        "feedback": feedback  # Pass the feedback to the template
-    }
-    return render(request, "recruit/edit.html", context)
 
 
 
-def delete(request, id):
-    candidate = get_object_or_404(Candidate, id=id)
-    candidate.delete()
-    messages.error(request, "Data Deleted Successfully")
-    return redirect('ta_members')
+
+
+
 
 def common_page(request):
-    queryset = Candidate.objects.prefetch_related('feedbacks').all()
+    queryset = Employee.objects.prefetch_related('feedbacks').all()
     user = request.user
+    
 
     # # Assuming user is related to an Interviewer object, and we need to use interviewer_name
     # try:
@@ -354,24 +176,20 @@ def common_page(request):
             )
 
     context = {
-        'is_interviewer': user.groups.filter(name='Team_interviewer').exists() if user.is_authenticated else False,
         'is_poc': user.groups.filter(name='Team_poc').exists() if user.is_authenticated else False,
         'is_employee': user.groups.filter(name='Employee').exists() if user.is_authenticated else False,
         'queryset': queryset,
-        'is_tamember': request.user.groups.filter(name="TA_member").exists(),
     }
     return render(request, 'recruit/common_page.html', context)
 
 
 
 
-class CandidateFormListCreate(generics.ListCreateAPIView):
-    queryset = Candidate.objects.all()
-    serializer_class = CandidateFormSerializer
+
 
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Team, Employee, POC, Interviewer, Manager
+from .models import Team, Employee, POC, Manager
 from .forms import RegistrationForm
 from django.contrib.auth.models import Group
 
@@ -465,121 +283,125 @@ def register_member(request):
 
 
 
-def register_ta_member(request):
-    # try:
-        # Retrieve the manager's team based on the logged-in user
-    manager = TAManager.objects.get(name=request.user.username)
-    team = manager.ta_team
-    # except TAManager.DoesNotExist:
-    #     messages.error(request, "You are not authorized to register TA members.")
-    #     return redirect('some_error_page')
 
-    if request.method == 'POST':
-        form = TARegistrationForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            role = form.cleaned_data['role']
-            name = form.cleaned_data['name']
 
-            # Create the User object
-            user = User.objects.create_user(username=username, password=password)
-            
-            # Assign the user to a group based on their role
-            if role == 'ta_member':
-                TAMember.objects.create(name=name, ta_team=team)
-                group, created = Group.objects.get_or_create(name='TA_member')
-                user.groups.add(group)  # Assign the user to the group
-                user.save()
-            else:
-                messages.error(request, "Invalid role selected.")
-                return redirect('ta_managers')
+from rest_framework import viewsets
+from .serializers import *
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny
 
-            messages.success(request, f'{role.capitalize()} registered successfully with username: {username}')
-            return redirect('ta_managers')
+class TimesheetView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        # Retrieve all timesheets
+        timesheets = Timesheet.objects.all()
+        serializer = TimesheetSerializer(timesheets, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# views.py
+from rest_framework.generics import ListAPIView
+from .models import Program, Team
+from .serializers import ProgramSerializer, TeamSerializer
+
+class ProgramListView(ListAPIView):
+    queryset = Program.objects.all()
+    serializer_class = ProgramSerializer
+    permission_classes = [AllowAny]
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Team
+from .serializers import TeamSerializer
+
+class TeamListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, program_id=None, *args, **kwargs):
+        # Filter teams by program_id if provided
+        if program_id:
+            teams = Team.objects.filter(program=program_id)
         else:
-            # Display form errors
-            messages.error(request, form.errors)
+            teams = Team.objects.all()
+        serializer = TeamSerializer(teams, many=True)
+        return Response(serializer.data)
 
-    else:
-        form = TARegistrationForm()
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Program, Team, Employee, Timesheet
+from .serializers import ProgramSerializer, TeamSerializer, EmployeeSerializer, TimesheetSerializer
 
-    return render(request, 'recruit/register_ta_member.html', {'form': form, 'team': team})
+@api_view(["GET"])
+def get_programs(request):
+    programs = Program.objects.all()
+    serializer = ProgramSerializer(programs, many=True)
+    return Response(serializer.data)
 
+@api_view(["GET"])
+def get_teams(request):
+    teams = Team.objects.all()
+    serializer = TeamSerializer(teams, many=True)
+    return Response(serializer.data)
 
-# @login_required
-# def poc(request):
-#     # Get the TA member associated with the logged-in user
-#     try:
-#         poc = POC.objects.get(poc_name=request.user.username)
-#     except POC.DoesNotExist:
-#         return redirect('no_access')  # Redirect if user is not a TA member
-#     team = poc.team
-#     candidates = Candidate.objects.filter(team=team)
-#     interviewers = Interviewer.objects.filter(team=team)
+@api_view(["GET", "POST"])
+def manage_employees(request):
+    if request.method == "GET":
+        employees = Employee.objects.all()
+        serializer = EmployeeSerializer(employees, many=True)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        data = request.data
+        team = Team.objects.get(team_id=data["team"])
+        employee = Employee.objects.create(employee_name=data["employee_name"], team=team)
+        serializer = EmployeeSerializer(employee)
+        return Response(serializer.data)
 
-#     context = {
-#         'candidates': candidates,
-#         'interviewers': interviewers,
-#     }
-#     return render(request, 'recruit/poc.html', context)
+@api_view(["GET"])
+def get_timesheets(request):
+    timesheets = Timesheet.objects.all()
+    serializer = TimesheetSerializer(timesheets, many=True)
+    return Response(serializer.data)
 
-# @login_required
-# def add_interviewer(request):
-#     if request.method == 'POST':
-#         candidate_id = request.POST.get('candidate_id')
-#         interviewer_id = request.POST.get('interviewer_id')
+# views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-#         try:
-#             candidate = Candidate.objects.get(id=candidate_id)
-#             interviewer = Interviewer.objects.get(interviewer_id=interviewer_id)
-#             candidate.interviewer = interviewer
-#             candidate.save()
-#             messages.success(request, 'Interviewer added successfully.')
-#         except (Candidate.DoesNotExist, Interviewer.DoesNotExist):
-#             messages.error(request, 'Invalid candidate or interviewer.')
+class LoginView(APIView):
+    permission_classes = [AllowAny]
 
-#     return redirect(request,'recruit/poc.html')
-
-from .models import POC, Candidate, Interviewer
-
-@login_required
-def poc(request):
-    # Fetch the POC associated with the logged-in user
-    try:
-        poc = POC.objects.get(poc_name=request.user.username)
-    except POC.DoesNotExist:
-        return redirect('no_access')  # Redirect if user is not a POC
-    
-    # Get the team and related data
-    team = poc.team
-    candidates = Candidate.objects.filter(team=team)
-    interviewers = Interviewer.objects.filter(team=team)
-
-    if request.method == 'POST':
-        # Handle form submission to assign an interviewer
-        candidate_id = request.POST.get('candidate_id')
-        interviewer_id = request.POST.get('interviewer_id')
-
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        
         try:
-            candidate = Candidate.objects.get(id=candidate_id)
-            interviewer = Interviewer.objects.get(interviewer_id=interviewer_id)
-            candidate.interviewer = interviewer
-            candidate.save()
-            messages.success(request, 'Interviewer assigned successfully.')
-        except (Candidate.DoesNotExist, Interviewer.DoesNotExist):
-            messages.error(request, 'Invalid candidate or interviewer.')
+            user = User.objects.get(username=username)
+            if user.check_password(password):
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                return Response({"access_token": access_token}, status=status.HTTP_200_OK)
+            else:
+                return Response({"detail": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response({"detail": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
 
-    context = {
-        'candidates': candidates,
-        'interviewers': interviewers,
-    }
-    return render(request, 'recruit/poc.html', context)
+class LogoutView(APIView):
+    permission_classes = [AllowAny]
 
-
-
-
-
-
-
-
+    def post(self, request):
+        try:
+            # For JWT, blacklisting can be implemented to invalidate the token
+            token = request.data.get('access_token')
+            refresh_token = RefreshToken(token)
+            refresh_token.blacklist()  # Blacklist the refresh token (logout)
+            return Response({"detail": "Successfully logged out"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
